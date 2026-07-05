@@ -59,8 +59,16 @@ export default function LoginPopup() {
             }
         };
 
+        const handleOpenPopup = () => {
+            setIsOpen(true);
+        };
+
         window.addEventListener('auth-change', handleAuthChange);
-        return () => window.removeEventListener('auth-change', handleAuthChange);
+        window.addEventListener('open-login-popup', handleOpenPopup);
+        return () => {
+            window.removeEventListener('auth-change', handleAuthChange);
+            window.removeEventListener('open-login-popup', handleOpenPopup);
+        };
     }, []);
 
     const handleClose = () => {

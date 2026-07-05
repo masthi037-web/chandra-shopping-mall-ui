@@ -13,6 +13,8 @@ interface ProductState {
     categoryTimestamps: Record<string, number>;
     markCategoryAsFetched: (categoryId: string) => void;
     isCategoryExpired: (categoryId: string) => boolean;
+    activeCategoryId: string | null;
+    setActiveCategoryId: (id: string | null) => void;
 }
 
 const EXPIRATION_TIME = 7 * 60 * 1000; // 7 minutes
@@ -24,6 +26,8 @@ export const useProduct = create<ProductState>()(
             categories: [],
             selectedProduct: null,
             categoryTimestamps: {},
+            activeCategoryId: null,
+            setActiveCategoryId: (activeCategoryId) => set({ activeCategoryId }),
             setProducts: (products) => set((state) => ({
                 products: typeof products === 'function' ? products(state.products) : products,
             })),

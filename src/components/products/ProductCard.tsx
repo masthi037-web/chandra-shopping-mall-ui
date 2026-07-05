@@ -88,79 +88,78 @@ export const ProductCard = ({ product, hideDescription = false }: ProductCardPro
           useProduct.getState().setSelectedProduct(product);
         }}
       >
-        <div className="relative w-full h-full flex flex-col bg-background transition-all duration-300">
+        <div className="relative w-full h-full flex flex-col bg-white border border-[#e8e4db]/80 rounded-2xl overflow-hidden hover:border-[#c29f8a]/60 shadow-sm hover:shadow-[0_12px_32px_rgba(194,159,138,0.12)] transition-all duration-500">
           {/* Image Container - Tall Aspect Ratio */}
-          <div className="relative aspect-[3/4] w-full overflow-hidden bg-secondary/5 rounded-sm">
+          <div className="relative aspect-[3/4] w-full overflow-hidden bg-secondary/5">
             <div
               className="flex h-full transition-transform duration-700 ease-in-out"
               style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
             >
               {slides.map((imgSrc, idx) => (
-                <div key={idx} className="relative w-full h-full flex-shrink-0 bg-secondary/10">
+                <div key={idx} className="relative w-full h-full flex-shrink-0 bg-secondary/10 overflow-hidden">
                   <Image
                     src={imgSrc || `https://picsum.photos/seed/${product.id}/300/400`}
                     alt={`${product.name} - ${idx + 1}`}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
-                    className={cn("object-cover", isDisabled && "grayscale opacity-50")}
+                    className={cn("object-cover transition-transform duration-700 ease-out group-hover:scale-105", isDisabled && "grayscale opacity-50")}
                   />
                 </div>
               ))}
             </div>
-
+ 
             {/* Multiple Set Discount Badges - Top Left */}
             {product.multipleSetDiscount && typeof product.multipleSetDiscount === 'string' && (
-              <div className="absolute top-2 left-2 z-10 flex flex-col gap-1 pointer-events-none">
+              <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1 pointer-events-none">
                 {String(product.multipleSetDiscount).split('&&&').map((offer, idx) => {
                   if (!offer) return null;
                   const parts = String(offer).trim().split('-');
                   if (parts.length !== 2) return null;
-
+ 
                   const qty = parts[0].trim();
                   const discount = parts[1].trim();
-
+ 
                   if (!qty || !discount) return null;
-
+ 
                   return (
-                    <div key={idx} className="bg-[#b31b20] text-white px-1.5 py-[2px] rounded-sm shadow-sm text-[9px] font-bold tracking-wide">
+                    <div key={idx} className="bg-rose-600/90 backdrop-blur-md text-white px-2 py-0.5 rounded-full shadow-sm text-[9px] font-black uppercase tracking-wide border border-rose-500/20">
                       {qty} @ {discount}%
                     </div>
                   );
                 })}
               </div>
             )}
-
+ 
             {/* Heart Icon - Top Right */}
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-2 right-2 h-8 w-8 hover:bg-transparent text-muted-foreground transition-all duration-300 z-20"
+              className="absolute top-2.5 right-2.5 h-8 w-8 rounded-full bg-black/35 hover:bg-black/50 backdrop-blur-sm text-white transition-all duration-300 z-20 shadow-sm"
               onClick={handleWishlistClick}
             >
               <Heart
                 className={cn(
-                  "w-5 h-5 transition-colors stroke-[1.5]",
-                  isWishlisted ? "fill-primary text-primary" : "text-white drop-shadow-md"
+                  "w-4 h-4 transition-colors stroke-[2]",
+                  isWishlisted ? "fill-primary text-primary" : "text-white"
                 )}
               />
             </Button>
-
+ 
             {/* Bestseller Badge - Bottom Left */}
-            <div className="absolute bottom-0 left-0 z-10 pointer-events-none">
+            <div className="absolute bottom-2.5 left-2.5 z-10 pointer-events-none">
               <div 
-                className="bg-[#e4c275] px-2 py-[3px] text-[9px] font-bold text-[#3d2a00] uppercase tracking-wider flex items-center pr-4 shadow-sm"
-                style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0% 100%)' }}
+                className="bg-amber-500/10 backdrop-blur-md border border-amber-500/20 text-[#a07823] px-2.5 py-[3px] rounded-full text-[9px] font-black tracking-widest uppercase shadow-sm"
               >
                 BESTSELLER
               </div>
             </div>
-
+ 
             {/* Rating Badge - Bottom Right */}
-            <div className="absolute bottom-2 right-2 z-10 bg-white px-1.5 py-[2px] rounded-sm flex items-center gap-[3px] shadow-sm pointer-events-none border border-black/5">
-              <span className="text-[10px] font-bold text-[#333] leading-none mt-[1px]">{(4.1 + ((Number(product.id) || product.id.toString().charCodeAt(0)) % 6) * 0.1).toFixed(1)}</span>
-              <Star className="w-[10px] h-[10px] fill-[#059669] text-[#059669]" />
+            <div className="absolute bottom-2.5 right-2.5 z-10 bg-black/45 backdrop-blur-md border border-white/10 px-2 py-0.5 rounded-full flex items-center gap-[3px] shadow-sm pointer-events-none">
+              <span className="text-[10px] font-bold text-white leading-none">{(4.1 + ((Number(product.id) || product.id.toString().charCodeAt(0)) % 6) * 0.1).toFixed(1)}</span>
+              <Star className="w-[10px] h-[10px] fill-amber-400 text-amber-400" />
             </div>
-
+ 
             {/* Status Overlay */}
             {isDisabled && (
               <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/5 backdrop-blur-[2px]">
@@ -173,20 +172,20 @@ export const ProductCard = ({ product, hideDescription = false }: ProductCardPro
               </div>
             )}
           </div>
-
+ 
           {/* Content Area */}
-          <div className="pt-3 pb-2 flex flex-col gap-1 flex-1 bg-white">
-            <h3 className="font-medium text-[13px] md:text-sm text-[#333] leading-[1.3] line-clamp-2" title={product.name}>
+          <div className="p-3.5 flex flex-col gap-1.5 flex-1 bg-white">
+            <h3 className="font-serif text-[14px] md:text-base text-[#2a2a2a] leading-[1.3] line-clamp-2 group-hover:text-primary transition-colors duration-300" title={product.name}>
               {product.name}
             </h3>
-
-            <div className="flex items-end justify-between mt-auto pt-1">
+ 
+            <div className="flex items-center justify-between mt-auto pt-2 border-t border-[#f4f2ee]">
               {(() => {
                 let displayPrice = 0;
                 let originalPriceForDisplay = 0;
                 let hasDiscount = false;
                 let offerPercent = 0;
-
+ 
                 if (product.price && product.price > 0) {
                   offerPercent = product.productOffer ? parseFloat(product.productOffer.toString().replace(/[^0-9.]/g, '')) : 0;
                   if (offerPercent > 0) {
@@ -213,26 +212,26 @@ export const ProductCard = ({ product, hideDescription = false }: ProductCardPro
                   });
                   displayPrice = minP;
                 }
-
+ 
                 return (
                   <div className="flex flex-col gap-[2px]">
                     {hasDiscount ? (
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[11px] text-[#888] line-through">₹{originalPriceForDisplay.toLocaleString('en-IN')}</span>
-                        <span className="text-sm md:text-base font-bold text-[#111]">₹{displayPrice.toLocaleString('en-IN')}</span>
-                        <span className="text-[10px] md:text-xs font-bold text-[#e53b49] uppercase">{offerPercent}% OFF</span>
+                      <div className="flex items-baseline gap-1.5 flex-wrap">
+                        <span className="text-xs text-[#888] line-through">₹{originalPriceForDisplay.toLocaleString('en-IN')}</span>
+                        <span className="text-sm md:text-base font-bold text-[#1a1a1a]">₹{displayPrice.toLocaleString('en-IN')}</span>
+                        <span className="text-[10px] font-bold text-[#e53b49] uppercase">{offerPercent}% OFF</span>
                       </div>
                     ) : (
-                      <span className="text-sm md:text-base font-bold text-[#111]">₹{displayPrice.toLocaleString('en-IN')}</span>
+                      <span className="text-sm md:text-base font-bold text-[#1a1a1a]">₹{displayPrice.toLocaleString('en-IN')}</span>
                     )}
                   </div>
                 );
               })()}
-
+ 
               {!isDisabled && (
                 <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="shrink-0 ml-2">
                   <AddToCartSheet product={product}>
-                    <Button size="icon" className="h-8 w-8 rounded-md bg-[#eb3e45] hover:bg-[#d6343a] shadow-sm text-white">
+                    <Button size="icon" className="h-9 w-9 rounded-full bg-[#eb3e45] hover:bg-[#d6343a] shadow-md shadow-rose-500/15 hover:scale-105 active:scale-95 transition-all text-white flex items-center justify-center">
                       <ShoppingBag className="h-[16px] w-[16px] stroke-[2]" />
                     </Button>
                   </AddToCartSheet>

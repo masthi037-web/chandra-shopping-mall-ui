@@ -12,7 +12,7 @@ import { useWishlist } from '@/hooks/use-wishlist';
 import { useCart } from '@/hooks/use-cart';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { ProductImageCarousel } from '@/components/products/ProductImageCarousel';
+import ProductImageZoom from '@/components/products/ProductImageZoom';
 import Recommendations from '@/components/products/Recommendations';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
@@ -420,7 +420,7 @@ export default function ProductDetailPage() {
       </div>
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
         {/* Product Image Carousel */}
-        <div className="relative aspect-[4/5] w-full rounded-3xl overflow-hidden bg-secondary/10 border border-border/50 shadow-sm md:aspect-auto md:h-[480px]">
+        <div className="relative w-full overflow-hidden">
           {(() => {
             // Collect all possible images
             const imagesList: string[] = [];
@@ -475,7 +475,7 @@ export default function ProductDetailPage() {
               imagesList.push(product.imageUrl || ''); // Give it at least something
             }
 
-            return <ProductImageCarousel images={imagesList} alt={product.name} />
+            return <ProductImageZoom images={imagesList} alt={product.name} />
           })()}
 
           {(product.productStatus === 'OUTOFSTOCK' || product.productStatus === 'INACTIVE') && (
@@ -541,24 +541,7 @@ export default function ProductDetailPage() {
               Taxes included. {companyDetails?.freeDeliveryCost && `Free shipping on orders over ${companyDetails.freeDeliveryCost}/-`}
             </p>
 
-            {/* Rating simplified - Random Logic */}
-            <div className="flex items-center gap-2 mt-3">
-              <div className="flex items-center gap-1 text-primary">
-                {(() => {
-                  const pid = Number(product.id) || product.id.toString().charCodeAt(0);
-                  const randomRating = 4.1 + (pid % 6) * 0.1;
-                  return [...Array(5)].map((_, i) => (
-                    <Star key={i} className={cn("h-4 w-4", i < Math.floor(randomRating) ? 'fill-primary text-primary' : 'text-muted-foreground/30 fill-muted-foreground/30')} />
-                  ));
-                })()}
-              </div>
-              <span className="text-muted-foreground text-sm font-medium ml-1">
-                ({(() => {
-                  const pid = Number(product.id) || product.id.toString().charCodeAt(0);
-                  return (4.1 + (pid % 6) * 0.1).toFixed(1);
-                })()})
-              </span>
-            </div>
+            {/* Rating simplified - Removed per request */}
 
             <p className="mt-4 text-muted-foreground leading-relaxed text-base">{product.description}</p>
           </div>
@@ -807,64 +790,7 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      <div className="mt-20">
-        <h2 className="font-headline text-3xl md:text-3xl font-bold mb-8 text-foreground/80">
-          Customer Reviews
-        </h2>
-        {/* ... reviews section stays same or simplified ... */}
-        <div className="grid md:grid-cols-5 gap-8 lg:gap-12">
-          {/* ... existing review UI ... */}
-          <div className="md:col-span-2 space-y-4">
-            <div className="flex flex-col items-center justify-center bg-secondary/30 rounded-2xl p-6 border border-border/50">
-              {(() => {
-                const pid = Number(product.id) || product.id.toString().charCodeAt(0);
-                const randomRating = 4.1 + (pid % 6) * 0.1;
-                return (
-                  <>
-                    <p className="text-5xl font-bold text-foreground">{randomRating.toFixed(1)}</p>
-                    <div className="flex items-center gap-1 text-primary mt-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={cn("h-6 w-6", i < Math.floor(randomRating) ? 'fill-primary text-primary' : 'fill-muted-foreground/20 text-muted-foreground/20')} />
-                      ))}
-                    </div>
-                  </>
-                );
-              })()}
-              {/* <p className="text-muted-foreground text-sm mt-2">Based on {product.reviews?.length || 0} reviews</p> */}
-            </div>
-          </div>
-          {/* ... keeping existing review list simplified for brevity in this replace ... */}
-          <div className="md:col-span-3">
-            <div className="space-y-6">
-              {(product.reviews || []).map((review) => (
-                <div key={review.id} className="flex gap-4 p-4 rounded-2xl bg-secondary/10 border border-border/40">
-                  <Avatar className="h-10 w-10 border">
-                    <AvatarImage src={review.avatar} alt={review.author} />
-                    <AvatarFallback>{review.author ? review.author.charAt(0) : 'U'}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <p className="font-semibold text-foreground">{review.author}</p>
-                      <div className="flex items-center gap-0.5 text-primary">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={cn("h-3.5 w-3.5", i < review.rating ? 'fill-primary text-primary' : 'fill-muted-foreground/20 text-muted-foreground/20')} />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">{review.date}</p>
-                    <p className="mt-3 text-foreground/90 text-sm leading-relaxed">{review.text}</p>
-                  </div>
-                </div>
-              ))}
-              {(!product.reviews || product.reviews.length === 0) && (
-                <div className="text-center py-10 text-muted-foreground">
-                  {/* <p>No reviews yet. Be the first to review!</p> */}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Customer Reviews - Removed per request */}
 
 
 

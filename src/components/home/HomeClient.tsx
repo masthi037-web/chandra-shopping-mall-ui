@@ -21,6 +21,7 @@ import { CouponCarousel } from '@/components/home/CouponCarousel';
 import { WhatsAppButton } from '@/components/common/WhatsAppButton';
 import SectionDivider from '@/components/common/SectionDivider';
 import { TrendingCarousel } from '@/components/home/TrendingCarousel';
+import { categories as mockCategories } from '@/data/products';
 
 interface HomeClientProps {
     initialCategories: Category[];
@@ -31,7 +32,7 @@ interface HomeClientProps {
 export default function HomeClient({ initialCategories, companyDetails, fetchAllAtOnce }: HomeClientProps) {
     const router = useRouter();
 
-    const { categories, setCategories, isCategoryExpired, markCategoryAsFetched } = useProduct();
+    const { categories, setCategories, isCategoryExpired, markCategoryAsFetched, activeCategoryId, setActiveCategoryId } = useProduct();
     const tenant = useTenant();
     const { theme, categoryPage, text, typography, homeLayout } = tenant;
     const categoryShape = theme?.categoryFrame || 'circle';
@@ -46,10 +47,12 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
 
     const shapeClass = getShapeClass(categoryShape);
 
-
     // Auth State
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userRole, setUserRole] = useState<string | null>(null);
+
+    // Category-specific Search query
+    const [categorySearchQuery, setCategorySearchQuery] = useState('');
 
     useEffect(() => {
         const checkAuth = () => {
@@ -64,7 +67,17 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
         return () => window.removeEventListener('auth-change', checkAuth);
     }, []);
 
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    // Set first category as active on load if none selected
+    useEffect(() => {
+        if (categories.length > 0 && !activeCategoryId) {
+            setActiveCategoryId(categories[0].id);
+        }
+    }, [categories, activeCategoryId, setActiveCategoryId]);
+
+    // Clear search query when category changes
+    useEffect(() => {
+        setCategorySearchQuery('');
+    }, [activeCategoryId]);
 
     const handleCategoryClick = (categoryId: string) => {
         if (categoryPage) {
@@ -72,7 +85,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
             const urlSlug = category ? slugify(category.name) : categoryId;
             router.push(`/category/${urlSlug}`);
         } else {
-            setSelectedCategory(categoryId);
+            setActiveCategoryId(categoryId);
 
             setTimeout(() => {
                 const element = document.getElementById('first-category-products');
@@ -85,12 +98,38 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
         }
     };
 
+    const isChandra = tenant.id.toLowerCase().includes('chandra') || tenant.id.toLowerCase().includes('suta');
+
+    const imageMap = useMemo(() => new Map(PlaceHolderImages.map(img => [img.id, img])), []);
+
+    // Bestseller Sarees selector
+    const bestsellerSarees: ProductWithImage[] = useMemo(() => {
+        const activeCats = categories.length > 0 ? categories : mockCategories;
+        // Try to find Saree category first
+        const sareeCats = activeCats.filter(c => c.name.toLowerCase().includes('saree'));
+        const prods = sareeCats.length > 0 
+            ? sareeCats.flatMap(c => c.catalogs.flatMap(cat => cat.products)) 
+            : activeCats.flatMap(c => c.catalogs.flatMap(cat => cat.products));
+
+        return prods
+            .filter(p => p.famous)
+            .slice(0, 8)
+            .map(p => {
+                const image = imageMap.get(p.imageId);
+                return {
+                    ...p,
+                    imageHint: image?.imageHint || 'product image',
+                    imageUrl: resolveImageUrl(p.productImage || (p.images && p.images.length > 0 ? p.images[0] : '') || 'https://picsum.photos/seed/' + p.id + '/400/600')
+                } as ProductWithImage;
+            });
+    }, [categories, imageMap]);
+
     // --- Dynamic Category Product Grid Logic ---
     const firstCategoryId = categories.length > 0 ? categories[0].id : undefined;
 
     // If categoryPage is false, display the selected category. Otherwise, always display the first.
-    const activeCategoryId = categoryPage ? firstCategoryId : (selectedCategory || firstCategoryId);
-    const activeCategory = categories.find(c => c.id === activeCategoryId);
+    const currentActiveCategoryId = categoryPage ? firstCategoryId : (activeCategoryId || firstCategoryId);
+    const activeCategory = categories.find(c => c.id === currentActiveCategoryId);
 
     const [isLoadingCategory, setIsLoadingCategory] = useState<Record<string, boolean>>({});
     const fetchingRef = useRef<Record<string, boolean>>({});
@@ -160,7 +199,6 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
     }, [activeCategory, selectedCatalogId]);
 
     const selectedCatalog = catalogs.find(c => c.id === selectedCatalogId);
-    const imageMap = useMemo(() => new Map(PlaceHolderImages.map(img => [img.id, img])), []);
 
     const [searchQuery, setSearchQuery] = useState("");
     const [showSearchDropdown, setShowSearchDropdown] = useState(false);
@@ -179,6 +217,22 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
             })
         ) : [];
     }, [activeCategory, imageMap]);
+
+    const fallbackProducts: ProductWithImage[] = useMemo(() => {
+        if (allCategoryProducts.length > 0) return allCategoryProducts;
+        return mockCategories.flatMap(category =>
+            category.catalogs.flatMap(catalog =>
+                catalog.products.map(p => {
+                    const image = imageMap.get(p.imageId);
+                    return {
+                        ...p,
+                        imageHint: image?.imageHint || 'product image',
+                        imageUrl: resolveImageUrl(p.productImage || (p.images && p.images.length > 0 ? p.images[0] : '') || 'https://picsum.photos/seed/' + p.id + '/400/600')
+                    } as ProductWithImage;
+                })
+            )
+        );
+    }, [allCategoryProducts, imageMap]);
 
     const allNewArrivals: ProductWithImage[] = useMemo(() => {
         return activeCategory ? activeCategory.catalogs.flatMap(c => c.products)
@@ -241,6 +295,21 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
         }
         return [];
     }, [selectedCatalog, activeCategory, imageMap]);
+
+    const filteredNewArrivals = useMemo(() => {
+        if (!categorySearchQuery.trim()) return newArrivals;
+        return newArrivals.filter(p => p.name.toLowerCase().includes(categorySearchQuery.toLowerCase()));
+    }, [newArrivals, categorySearchQuery]);
+
+    const filteredFamousProducts = useMemo(() => {
+        if (!categorySearchQuery.trim()) return famousProducts;
+        return famousProducts.filter(p => p.name.toLowerCase().includes(categorySearchQuery.toLowerCase()));
+    }, [famousProducts, categorySearchQuery]);
+
+    const filteredBaseProducts = useMemo(() => {
+        if (!categorySearchQuery.trim()) return baseProducts;
+        return baseProducts.filter(p => p.name.toLowerCase().includes(categorySearchQuery.toLowerCase()));
+    }, [baseProducts, categorySearchQuery]);
 
     useEffect(() => {
         if (searchQuery.trim() && activeCategory) {
@@ -401,8 +470,8 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
 
                 <SectionDivider />
 
-                {allCategoryProducts.length > 0 && (
-                    <TrendingCarousel products={allCategoryProducts} />
+                {fallbackProducts.length > 0 && (
+                    <TrendingCarousel products={fallbackProducts} />
                 )}
 
                 <SectionDivider />
@@ -411,54 +480,65 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                     {/* Categories Section */}
                     <section id="shop-now" className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 scroll-mt-24">
                         <div className="flex flex-col items-center justify-center mb-8 text-center">
-                            {homeLayout === 'modern' && (
-                                <div className="flex items-center gap-2 mb-3">
-                                    <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
-                                    <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">Shop by Category</span>
+                            {isChandra ? (
+                                <div className="flex flex-col items-center justify-center">
+                                    <div className="flex items-center gap-3 justify-center text-rose-500 font-bold mb-2">
+                                        <span className="text-xl">♥</span>
+                                        <h2 className="text-3xl font-serif uppercase tracking-[0.15em] text-[#1a1a1a]">
+                                            Dipped in Love
+                                        </h2>
+                                        <span className="text-xl">♥</span>
+                                    </div>
+                                    <p className="text-muted-foreground text-xs md:text-sm tracking-wide font-serif max-w-md mx-auto">
+                                        India's most loved Artisanal brand, handcrafted by 17000+ artisans
+                                    </p>
                                 </div>
+                            ) : (
+                                <>
+                                    {homeLayout === 'modern' && (
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
+                                            <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">Shop by Category</span>
+                                        </div>
+                                    )}
+                                    <h2
+                                        className={cn(
+                                            "font-headline transition-all duration-500",
+                                            homeLayout === 'modern' ? "text-3xl md:text-4xl font-black tracking-tight" : "text-3xl",
+                                            tenant.id.toLowerCase().includes('anantha') && "text-4xl uppercase tracking-tighter font-bold"
+                                        )}
+                                        style={{
+                                            fontWeight: typography?.heading.weight || '900',
+                                            letterSpacing: homeLayout === 'modern' ? '-0.03em' : (typography?.heading.letterSpacing || '-0.05em')
+                                        }}
+                                    >
+                                        Discover Collections
+                                    </h2>
+                                    <p className={cn(
+                                        "text-muted-foreground mt-1 text-sm",
+                                        tenant.id.toLowerCase().includes('anantha') && "font-display uppercase tracking-[0.3em] text-[10px]"
+                                    )}>
+                                        Explore our curated range of products
+                                    </p>
+                                </>
                             )}
-                            <h2
-                                className={cn(
-                                    "font-headline transition-all duration-500",
-                                    homeLayout === 'modern' ? "text-3xl md:text-4xl font-black tracking-tight" : "text-3xl",
-                                    tenant.id.toLowerCase().includes('anantha') && "text-4xl uppercase tracking-tighter font-bold"
-                                )}
-                                style={{
-                                    fontWeight: typography?.heading.weight || '900',
-                                    letterSpacing: homeLayout === 'modern' ? '-0.03em' : (typography?.heading.letterSpacing || '-0.05em')
-                                }}
-                            >
-                                Discover Collections
-                            </h2>
-                            <p className={cn(
-                                "text-muted-foreground mt-1 text-sm",
-                                tenant.id.toLowerCase().includes('anantha') && "font-display uppercase tracking-[0.3em] text-[10px]"
-                            )}>
-                                Explore our curated range of products
-                            </p>
                         </div>
 
                         {categories.length > 0 ? (
                             <div className="space-y-12">
-                                {/* Modern Category Tabs */}
-                                <div className="flex overflow-x-auto pb-4 gap-3 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth md:justify-center">
+                                {/* Category Tabs/Bubbles */}
+                                <div className="flex overflow-x-auto pb-4 gap-4 md:gap-6 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth md:justify-center">
                                     {(tenant.id.toLowerCase().includes('sandhya') ? categories.slice(0, 2) : categories).map(category => (
                                         <button
                                             key={category.id}
                                             onClick={() => handleCategoryClick(category.id)}
-                                            className={cn(
-                                                "relative group flex flex-col items-center gap-3 min-w-[100px] p-4 rounded-2xl transition-all duration-300 border border-transparent",
-                                                !categoryPage && (selectedCategory || firstCategoryId) === category.id
-                                                    ? "bg-primary/5 border-primary/20 shadow-sm"
-                                                    : "hover:bg-secondary/50 hover:border-border/50"
-                                            )}
+                                            className="relative group flex flex-col items-center gap-3 min-w-[100px] transition-all duration-300"
                                         >
                                             <div className={cn(
-                                                categoryShape === 'circle' ? "rounded-full" : shapeClass,
-                                                "flex items-center justify-center transition-all duration-300 overflow-hidden h-20 w-20 md:h-24 md:w-24",
-                                                !categoryPage && (selectedCategory || firstCategoryId) === category.id
-                                                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-110"
-                                                    : "bg-secondary text-muted-foreground group-hover:bg-secondary/80"
+                                                "rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden h-24 w-24 md:h-32 md:w-32 border-2",
+                                                !categoryPage && currentActiveCategoryId === category.id
+                                                    ? "border-amber-500 scale-105 shadow-md shadow-amber-500/10"
+                                                    : "border-transparent bg-secondary text-muted-foreground group-hover:border-amber-400 group-hover:scale-105"
                                             )}>
                                                 {category.categoryImage ? (
                                                     <img
@@ -472,8 +552,8 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                             </div>
                                             <span className={cn(
                                                 "text-xs md:text-sm font-semibold transition-colors text-center leading-tight max-w-[100px] md:max-w-[120px] break-words whitespace-normal px-1",
-                                                tenant.id.toLowerCase().includes('anantha') ? "font-display uppercase tracking-widest text-[10px]" : "line-clamp-2",
-                                                !categoryPage && (selectedCategory || firstCategoryId) === category.id ? "text-primary font-bold" : "text-muted-foreground group-hover:text-foreground"
+                                                isChandra ? "font-serif text-[#1a1a1a]" : (tenant.id.toLowerCase().includes('anantha') ? "font-display uppercase tracking-widest text-[10px]" : "line-clamp-2"),
+                                                !categoryPage && currentActiveCategoryId === category.id ? "text-primary font-bold" : "text-muted-foreground group-hover:text-foreground"
                                             )}>
                                                 {category.name}
                                             </span>
@@ -494,6 +574,59 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                         )}
                     </section>
 
+                    {isChandra && bestsellerSarees.length > 0 && (
+                        <>
+                            <SectionDivider />
+                            <section className="animate-in fade-in slide-in-from-bottom-6 duration-700">
+                                <div className="text-center mb-10">
+                                    <h2 className="text-3xl font-serif tracking-[0.15em] uppercase text-[#1a1a1a]">Bestseller Sarees</h2>
+                                    <div className="w-12 h-0.5 bg-amber-500 mx-auto mt-3" />
+                                </div>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                                    {bestsellerSarees.map(product => (
+                                        <div key={product.id} className="transition-all hover:translate-y-[-4px] duration-300">
+                                            <ProductCard product={product} hideDescription={true} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        </>
+                    )}
+
+                    {isChandra && (
+                        <>
+                            <SectionDivider />
+                            <div className="w-full overflow-hidden rounded-2xl relative shadow-md group">
+                                <div className="h-[200px] md:h-[300px] w-full relative bg-amber-950">
+                                    <img
+                                        src={companyDetails?.banner || "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&q=80&w=1920"}
+                                        alt="Promo Banner"
+                                        className="object-cover w-full h-full opacity-70 group-hover:scale-105 transition-transform duration-700"
+                                    />
+                                    <div className="absolute inset-0 z-10 flex items-center justify-center text-center px-6">
+                                        <div className="max-w-xl text-white space-y-3">
+                                            <span className="text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase text-amber-300 block">Celebrate Festivities</span>
+                                            <h2 className="text-2xl md:text-4xl font-serif italic text-white leading-tight">Celebrate Rath Yatra Collection</h2>
+                                            <p className="text-[11px] md:text-xs font-light text-white/90 max-w-sm mx-auto leading-relaxed">
+                                                From temple visits to family gatherings, find beautiful drapes that move with every celebration.
+                                            </p>
+                                            <div className="pt-2">
+                                                <button 
+                                                    onClick={() => {
+                                                        const element = document.getElementById('shop-now');
+                                                        if (element) element.scrollIntoView({ behavior: 'smooth' });
+                                                    }}
+                                                    className="px-6 py-2 bg-white text-black font-semibold text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-all duration-300 shadow-md"
+                                                >
+                                                    Shop Now
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
                     <SectionDivider />
 
                     {/* Dynamic Category Highlights Section */}
@@ -519,30 +652,40 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                 </div>
                             ) : (
                                 <>
-                                    {!fetchAllAtOnce && (
+                                    {(!fetchAllAtOnce || isChandra) && (
                                         <div className="flex justify-center mb-8 px-4 animate-in fade-in slide-in-from-top-2 duration-500">
                                             <div className="relative w-full max-w-md group" ref={searchRef}>
                                                 <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                                                    <Search className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors duration-300" />
+                                                    <Search className={cn("h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors duration-300", isChandra && "group-focus-within:text-amber-500")} />
                                                 </div>
                                                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-md opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 -z-10" />
                                                 <input
+                                                    id="category-search-input"
                                                     type="text"
                                                     placeholder={`Search in ${activeCategory.name}...`}
-                                                    value={searchQuery}
-                                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                                    onFocus={() => searchQuery.trim() && setShowSearchDropdown(true)}
-                                                    className="w-full pl-12 pr-4 py-4 bg-background/80 backdrop-blur-md border border-border/50 shadow-lg shadow-black/5 focus:shadow-primary/10 rounded-full transition-all duration-300 outline-none text-base placeholder:text-muted-foreground/60 focus:bg-background focus:border-primary/30"
+                                                    value={isChandra ? categorySearchQuery : searchQuery}
+                                                    onChange={(e) => {
+                                                        if (isChandra) {
+                                                            setCategorySearchQuery(e.target.value);
+                                                        } else {
+                                                            setSearchQuery(e.target.value);
+                                                        }
+                                                    }}
+                                                    onFocus={() => !isChandra && searchQuery.trim() && setShowSearchDropdown(true)}
+                                                    className={cn(
+                                                        "w-full pl-12 pr-4 py-4 bg-background border border-border/50 shadow-md focus:shadow-primary/10 rounded-full transition-all duration-300 outline-none text-base placeholder:text-muted-foreground/60",
+                                                        isChandra ? "focus:border-amber-500" : "focus:bg-background focus:border-primary/30"
+                                                    )}
                                                 />
 
                                                 {/* Search Dropdown */}
-                                                {showSearchDropdown && (
+                                                {!isChandra && showSearchDropdown && (
                                                     <div className="absolute top-full left-0 w-full mt-2 bg-card border rounded-xl shadow-lg z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-left max-h-[60vh] overflow-y-auto">
                                                         {searchDropdownResults.length > 0 ? (
                                                             <div className="py-2">
                                                                 <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                                                                     Products
-                                                                </div>
+                                                                 </div>
                                                                 {searchDropdownResults.map(product => (
                                                                     <div
                                                                         key={product.id}
@@ -615,8 +758,10 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
 
                                             <div className="flex overflow-x-auto items-stretch gap-4 pb-8 -mx-4 px-4 scroll-smooth no-scrollbar snap-x snap-mandatory">
                                                 {(() => {
-                                                    const offerProducts = activeCategory ? activeCategory.catalogs.flatMap(c => c.products)
-                                                        .filter(p => p.productOffer && String(p.productOffer) !== "0")
+                                                    const rawOffers = activeCategory ? activeCategory.catalogs.flatMap(c => c.products)
+                                                        .filter(p => p.productOffer && String(p.productOffer) !== "0") : [];
+                                                    const offerProducts = rawOffers
+                                                        .filter(p => !categorySearchQuery.trim() || p.name.toLowerCase().includes(categorySearchQuery.toLowerCase()))
                                                         .sort((a, b) => {
                                                             const getVal = (s?: string) => {
                                                                 const m = s?.match(/(\d+)/);
@@ -631,7 +776,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                                                 imageHint: image?.imageHint || 'product image',
                                                                 imageUrl: resolveImageUrl(p.productImage || (p.images && p.images.length > 0 ? p.images[0] : '') || '')
                                                             };
-                                                        }) : [];
+                                                        });
 
                                                     return offerProducts.map((product, index) => (
                                                         <div
@@ -648,7 +793,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                     )}
 
                                     {/* New Arrivals Block */}
-                                    {newArrivals.length > 0 && (
+                                    {filteredNewArrivals.length > 0 && (
                                         <div id="new-arrivals" className="mb-16 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200 scroll-mt-24">
                                             <SectionDivider className="mb-12" />
                                             <div className="flex items-center justify-between mb-6">
@@ -673,7 +818,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                             </div>
 
                                             <div className="flex overflow-x-auto items-stretch gap-4 pb-8 -mx-4 px-4 scroll-smooth no-scrollbar snap-x snap-mandatory">
-                                                {newArrivals.map((product) => (
+                                                {filteredNewArrivals.map((product) => (
                                                     <div key={product.id} className="w-[280px] md:w-[320px] flex-shrink-0 snap-center h-full flex flex-col">
                                                         <ProductCard product={product} hideDescription={true} />
                                                     </div>
@@ -683,7 +828,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                     )}
 
                                     {/* Famous Products Block / Signature Selection */}
-                                    {famousProducts.length > 0 && (
+                                    {filteredFamousProducts.length > 0 && (
                                         <div className="mb-16 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
                                             <SectionDivider className="mb-12" />
                                             <div className="flex items-center justify-between mb-6">
@@ -716,7 +861,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                             </div>
 
                                             <div className="flex overflow-x-auto items-stretch gap-4 pb-8 -mx-4 px-4 scroll-smooth no-scrollbar snap-x snap-mandatory">
-                                                {famousProducts.map((product) => (
+                                                {filteredFamousProducts.map((product) => (
                                                     <div key={product.id} className="w-[280px] md:w-[320px] flex-shrink-0 snap-center h-full flex flex-col">
                                                         <ProductCard product={product} hideDescription={true} />
                                                     </div>
@@ -751,7 +896,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                             }
                                         }}
                                     />
-                                    {baseProducts.length > 0 && (
+                                    {filteredBaseProducts.length > 0 && (
                                         <div id="catalog-products" className="mt-12 scroll-mt-24">
                                             <div className="flex items-center justify-between mb-8">
                                                 <div>
@@ -759,11 +904,11 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                                         {selectedCatalog?.name || `All Products in ${activeCategory?.name}`}
                                                     </h3>
                                                     <p className="text-muted-foreground text-sm mt-1">
-                                                        {baseProducts.length} items available
+                                                        {filteredBaseProducts.length} items available
                                                     </p>
                                                 </div>
                                             </div>
-                                            <ProductGrid products={baseProducts} />
+                                            <ProductGrid products={filteredBaseProducts} />
                                         </div>
                                     )}
                                 </>
@@ -774,4 +919,4 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
             </div>
         </div>
     );
-}
+} // HMR Touch comment to clear dev server cache

@@ -216,7 +216,7 @@ const TENANT_MAP: Record<string, Partial<TenantConfig>> = {
             productFrame: 'normal',
         },
         brandTone: { mood: "premium", cornerStyle: "soft", animationSpeed: "normal" },
-        surface: { header: "glass", footer: "branded", productCardStyle: "elevated" },
+        surface: { header: "glass", footer: "branded", productCardStyle: "elevated", productCardLayout: "saree" },
         text: {
             checkoutButton: "Proceed to Checkout",
             emptyCartParams: "Discover our latest styles!",

@@ -31,6 +31,14 @@ export default function SectionDivider({ className, color }: SectionDividerProps
                         patternUnits="userSpaceOnUse"
                         x="50%"
                     >
+                        <animateTransform 
+                            attributeName="patternTransform" 
+                            type="translate" 
+                            from="0,0" 
+                            to="-36,0" 
+                            dur="5s" 
+                            repeatCount="indefinite" 
+                        />
                         {/* Elegant interlocking loops/infinity flourish matching image1 */}
                         <path 
                             d="M 0 12 C 9 3, 9 21, 18 12 C 27 3, 27 21, 36 12" 

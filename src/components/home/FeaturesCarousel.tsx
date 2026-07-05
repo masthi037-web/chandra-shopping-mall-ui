@@ -1,99 +1,60 @@
-import { ShieldCheck, Truck, Star, LucideIcon, Zap, Heart, Award, Gift } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { CompanyFeature } from '@/lib/api-types';
+'use client';
 
-interface FeatureItem {
-    id: number;
-    title: string;
-    description: string;
-    icon: LucideIcon;
-    color: string;
-    bgColor: string;
-    iconColor: string;
-}
+import React from 'react';
+import { ShieldCheck, Truck, Sparkles } from 'lucide-react';
 
-const iconMap: Record<string, LucideIcon> = {
-    'ShieldCheck': ShieldCheck,
-    'Truck': Truck,
-    'Star': Star,
-    'Zap': Zap,
-    'Heart': Heart,
-    'Award': Award,
-    'Gift': Gift
-};
+export function FeaturesCarousel({ features }: { features?: any[] }) {
+  const items = [
+    { icon: ShieldCheck, text: "100% Authentic Handloom", color: "text-rose-500" },
+    { icon: Truck, text: "Artisanal Express Delivery", color: "text-[#c29f8a]" },
+    { icon: Sparkles, text: "Handcrafted by 17,000+ Artisans", color: "text-amber-500" }
+  ];
 
-const defaultFeatures: FeatureItem[] = [
-    {
-        id: 1,
-        title: "100% Authentic",
-        description: "Original recipes & ingredients",
-        icon: ShieldCheck,
-        color: "text-teal-600",
-        bgColor: "bg-teal-50",
-        iconColor: "text-teal-600"
-    },
-    {
-        id: 2,
-        title: "Fast Delivery",
-        description: "Fresh to your door.",
-        icon: Truck,
-        color: "text-green-600",
-        bgColor: "bg-green-50",
-        iconColor: "text-green-600"
-    },
-    {
-        id: 3,
-        title: "Premium Quality",
-        description: "Hand-picked by experts",
-        icon: Star,
-        color: "text-amber-600",
-        bgColor: "bg-amber-50",
-        iconColor: "text-amber-600"
-    }
-];
-
-interface FeaturesCarouselProps {
-    features?: CompanyFeature[];
-}
-
-export function FeaturesCarousel({ features }: FeaturesCarouselProps) {
-    // Map API features to component format or use default
-    const displayFeatures: FeatureItem[] = features && features.length > 0
-        ? features.map((f, index) => ({
-            id: index,
-            title: f.title,
-            description: f.description,
-            icon: iconMap[f.icon] || Star, // Fallback icon
-            color: f.color || "text-primary",
-            bgColor: f.bgColor || "bg-primary/10",
-            iconColor: f.iconColor || "text-primary"
-        }))
-        : defaultFeatures;
-
-    // Duplicate the items to create a seamless loop
-    const carouselItems = [...displayFeatures, ...displayFeatures, ...displayFeatures, ...displayFeatures];
-
-    return (
-        <div className="w-full overflow-hidden bg-background py-8 border-b border-border/40">
-            <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
-                <div className="animate-marquee flex items-center justify-center md:justify-start [&_li]:mx-4 [&_img]:max-w-none">
-                    {carouselItems.map((item, index) => (
-                        <div
-                            key={`${item.id}-${index}`}
-                            className="flex items-center gap-4 bg-card border border-border/50 rounded-2xl p-4 min-w-[280px] shadow-sm mx-3"
-                        >
-                            <div className={cn("w-12 h-12 rounded-full flex items-center justify-center shrink-0", item.bgColor)}>
-                                <item.icon className={cn("w-6 h-6", item.iconColor)} />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-foreground leading-tight">{item.title}</h3>
-                                <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <div className="relative w-full overflow-hidden bg-gradient-to-r from-[#fcfbf9] via-[#f5f1e6] to-[#fcfbf9] py-3.5 border-y border-[#e8e4db] shadow-sm transform -skew-y-1 md:-skew-y-0.5 scale-102 my-6 select-none">
+      <style>{`
+        .features-ticker-wrapper {
+          display: flex;
+          width: max-content;
+          animation: features-ticker-scroll 25s linear infinite;
+        }
+        .features-ticker-wrapper:hover {
+          animation-play-state: paused;
+        }
+        .features-ticker-group {
+          display: flex;
+          align-items: center;
+          gap: 3rem;
+          padding-right: 3rem;
+          flex-shrink: 0;
+        }
+        @keyframes features-ticker-scroll {
+          0% {
+            transform: translate3d(0, 0, 0);
+          }
+          100% {
+            transform: translate3d(-50%, 0, 0);
+          }
+        }
+      `}</style>
+      <div className="features-ticker-wrapper">
+        {[1, 2].map((groupNum) => (
+          <div key={groupNum} className="features-ticker-group">
+            {[1, 2, 3].map((repNum) => (
+              <React.Fragment key={repNum}>
+                {items.map((item, idx) => (
+                  <div key={`${groupNum}-${repNum}-${idx}`} className="flex items-center gap-2.5 text-[10px] md:text-[11px] font-serif tracking-[0.25em] uppercase text-[#2a2a2a] whitespace-nowrap">
+                    <item.icon className={`w-4 h-4 ${item.color}`} strokeWidth={1.5} />
+                    <span>{item.text}</span>
+                    <span className="text-[#c29f8a] text-xs ml-3">✦</span>
+                  </div>
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
