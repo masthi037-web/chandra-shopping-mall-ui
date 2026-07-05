@@ -1,3 +1,4 @@
+
 import { headers } from 'next/headers';
 import Image from 'next/image';
 import { Metadata } from 'next';
@@ -13,7 +14,7 @@ import { resolveTenantConfig } from '@/config/tenant-config';
 export async function generateMetadata(): Promise<Metadata> {
   const headersList = await headers();
   const headerDomain = headersList.get("x-company-domain");
-  const companyDomain = (headerDomain && headerDomain !== 'localhost') ? headerDomain : 'babaihomefoods';
+  const companyDomain = (headerDomain && headerDomain !== 'localhost') ? headerDomain : 'chandra-shopping';
   
   const tenantConfig = resolveTenantConfig(companyDomain);
   
@@ -44,7 +45,7 @@ export default async function Home() {
   // Middleware handles extraction and localhost fallback
   const headerDomain = headersList.get("x-company-domain");
   // FORCE HARDCODED FOR DEBUGGING IF NEEDED
-  const companyDomain = (headerDomain && headerDomain !== 'localhost') ? headerDomain : 'babaihomefoods';
+  const companyDomain = (headerDomain && headerDomain !== 'localhost') ? headerDomain : 'chandra-shopping';
 
   // Chained Data Fetching: Company -> Products
   const company = await fetchCompanyDetails(companyDomain);
@@ -88,12 +89,7 @@ export default async function Home() {
             {tenantConfig.homeLayout === 'fashion' ? (
         <section className="relative w-full min-h-screen overflow-hidden flex items-center bg-[#f4f6f5] pt-16">
           <div className="container mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center pb-24 md:pb-32 px-4 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="pt-10 lg:pt-0"
-            >
+            <div className="pt-10 lg:pt-0 animate-in fade-in slide-in-from-left-8 duration-700">
               <h1 className="text-6xl sm:text-7xl md:text-[90px] lg:text-[110px] font-black leading-[1.05] uppercase tracking-tight text-black flex flex-col items-start font-sans">
                 <span>LET'S</span>
                 <span className="bg-[#eada3c] px-4 -rotate-1 inline-block mt-2 mb-2 origin-left">EXPLORE</span>
@@ -101,22 +97,15 @@ export default async function Home() {
                 <span>CLOTHES.</span>
               </h1>
               <p className="mt-8 text-lg font-medium text-black/70 max-w-sm">Live for influential and innovative fashion!</p>
-              <motion.a 
+              <a 
                 href="#shop-now" 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="mt-10 inline-flex items-center justify-center px-12 py-5 bg-black text-white text-lg font-bold rounded-md hover:bg-black/90 transition-colors shadow-xl"
+                className="mt-10 inline-flex items-center justify-center px-12 py-5 bg-black text-white text-lg font-bold rounded-md hover:bg-black/90 transition-colors shadow-xl hover:scale-105 active:scale-95 duration-200"
               >
                 Shop Now
-              </motion.a>
-            </motion.div>
+              </a>
+            </div>
             
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="relative aspect-square w-full max-w-md lg:max-w-lg mx-auto mt-12 lg:mt-0"
-            >
+            <div className="relative aspect-square w-full max-w-md lg:max-w-lg mx-auto mt-12 lg:mt-0 animate-in fade-in zoom-in-95 duration-1000 delay-200">
               {/* Star decorations */}
               <div className="absolute top-0 right-0 w-12 h-12 text-black/20 animate-spin-slow">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l3 9 9 3-9 3-3 9-3-9-9-3 9-3z"/></svg>
@@ -126,7 +115,7 @@ export default async function Home() {
               </div>
               
               <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=1000" className="object-cover w-full h-full rounded-[40px] relative z-10 border-4 border-white shadow-2xl" alt="Fashion model" />
-            </motion.div>
+            </div>
           </div>
           
           {/* Brands Strip */}

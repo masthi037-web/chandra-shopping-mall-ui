@@ -109,12 +109,14 @@ export interface TenantConfig {
         googleVerification?: string;
     };
     categoryPage?: boolean;
+    homeLayout?: 'fashion' | 'modern' | 'original';
 }
 
 export const DEFAULT_CONFIG: TenantConfig = {
     id: "default",
     domain: "babaihomefoods",
     name: "Digi Turu",
+    homeLayout: 'original',
     theme: {
         colors: {
             primary: "180 80% 35%",
@@ -186,6 +188,46 @@ export const DEFAULT_CONFIG: TenantConfig = {
 };
 
 const TENANT_MAP: Record<string, Partial<TenantConfig>> = {
+    "chandra-shopping": {
+        id: "chandra-shopping",
+        name: "Chandra Shopping Mall",
+        homeLayout: 'fashion',
+        fetchAllAtOnce: true,
+        maxImageSizeMB: 2,
+        categoryPage: false,
+        theme: {
+            colors: {
+                primary: "353 82% 58%", // Crimson Red
+                primaryForeground: "0 0% 100%",
+                secondary: "0 0% 96%",
+                background: "0 0% 100%",
+                foreground: "0 0% 10%",
+            },
+            radius: "0.5rem",
+            fontFamily: "var(--font-outfit)",
+            productCard: {
+                backgroundColor: "white",
+                radius: "0.5rem",
+                shadow: "0 4px 12px rgba(0,0,0,0.05)",
+                border: "1px solid rgba(0,0,0,0.05)",
+            },
+            categoryFrame: 'circle',
+            catalogueFrame: 'circle',
+            productFrame: 'normal',
+        },
+        brandTone: { mood: "premium", cornerStyle: "soft", animationSpeed: "normal" },
+        surface: { header: "glass", footer: "branded", productCardStyle: "elevated" },
+        text: {
+            checkoutButton: "Proceed to Checkout",
+            emptyCartParams: "Discover our latest styles!",
+            quickAddButton: "Add to Bag",
+            searchPlaceholder: "Search fashion, sarees, and more...",
+            startsFrom: "Starts from",
+            heroTitle: "Redefine Your",
+            heroTitleHighlight: "Style",
+            heroDescription: "Explore our exclusive collection of premium sarees, menswear, and fashion arrivals at Chandra Shopping Mall.",
+        },
+    },
 
     "use1": {
         id: "sk-fashions",
