@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { Footer } from '@/components/layout/Footer';
 import { WishlistSheet } from '@/components/wishlist/WishlistSheet';
 import { GlobalScrollHandler } from '@/components/common/GlobalScrollHandler';
+import LoginPopup from '@/components/auth/LoginPopup';
 
 interface AppShellProps {
     children: React.ReactNode;
@@ -36,6 +37,7 @@ export default async function AppShell({ children, companyDomain }: AppShellProp
                     <BottomNavigation />
                 </div>
                 <WishlistSheet />
+                <LoginPopup />
                 <Toaster />
             </QueryProvider>
         </ThemeProvider>

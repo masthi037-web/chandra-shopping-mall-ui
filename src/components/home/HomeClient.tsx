@@ -19,6 +19,8 @@ import { useTenant } from '@/components/providers/TenantContext';
 import { FeaturesCarousel } from '@/components/home/FeaturesCarousel';
 import { CouponCarousel } from '@/components/home/CouponCarousel';
 import { WhatsAppButton } from '@/components/common/WhatsAppButton';
+import SectionDivider from '@/components/common/SectionDivider';
+import { TrendingCarousel } from '@/components/home/TrendingCarousel';
 
 interface HomeClientProps {
     initialCategories: Category[];
@@ -397,6 +399,14 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                     </div>
                 )}
 
+                <SectionDivider />
+
+                {allCategoryProducts.length > 0 && (
+                    <TrendingCarousel products={allCategoryProducts} />
+                )}
+
+                <SectionDivider />
+
                 <div className="container mx-auto px-4 space-y-24">
                     {/* Categories Section */}
                     <section id="shop-now" className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 scroll-mt-24">
@@ -484,6 +494,8 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                         )}
                     </section>
 
+                    <SectionDivider />
+
                     {/* Dynamic Category Highlights Section */}
                     {activeCategoryId && activeCategory && (
                         <section id="first-category-products" className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500 pb-24">
@@ -570,6 +582,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                     {/* Exclusive Offers Block */}
                                     {activeCategory && activeCategory.catalogs.flatMap(c => c.products).filter(p => p.productOffer && String(p.productOffer) !== "0").length > 0 && (
                                         <div className="mb-16 relative">
+                                            <SectionDivider className="mb-12" />
                                             <div className="absolute -top-10 -left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none animate-pulse" />
                                             <div className="flex items-center justify-between mb-6 relative">
                                                 <div className="flex items-center gap-3">
@@ -637,6 +650,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                     {/* New Arrivals Block */}
                                     {newArrivals.length > 0 && (
                                         <div id="new-arrivals" className="mb-16 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200 scroll-mt-24">
+                                            <SectionDivider className="mb-12" />
                                             <div className="flex items-center justify-between mb-6">
                                                 <div className="flex items-center gap-3">
                                                     <div className="relative flex h-3 w-3">
@@ -671,6 +685,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                     {/* Famous Products Block / Signature Selection */}
                                     {famousProducts.length > 0 && (
                                         <div className="mb-16 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
+                                            <SectionDivider className="mb-12" />
                                             <div className="flex items-center justify-between mb-6">
                                                 <div className="flex items-center gap-3">
                                                     <div className="relative flex h-3 w-3">
@@ -709,6 +724,8 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                             </div>
                                         </div>
                                     )}
+
+                                    <SectionDivider className="my-12" />
 
                                     <div className="flex items-center justify-between mb-6">
                                         <h3 className="text-xl font-semibold flex items-center gap-2">
