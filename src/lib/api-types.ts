@@ -1,0 +1,739 @@
+export interface ProductSizeColour {
+    productSizeColourId: number;
+    productSizeId: number;
+    colourName: string;
+    colourPrice: number;
+    productSizeColourQuantity: number;
+    productPics?: string;
+    sizeColourStatus: string;
+}
+
+// Renamed ProductPricing to ProductSize
+export interface ProductSize {
+    productSizeId: number;
+    productId: number;
+    productSizePrice: number;
+    productSizePriceAfterDiscount: number;
+    size: string;
+    sizeQuantity: number;
+    productSizeColours: ProductSizeColour[];
+    sizeStatus: string;
+}
+
+export interface ProductRating {
+    productRatingId: number;
+    productId: number;
+    customerId: number;
+    productRating: number;
+    productReview: string;
+    createdAt: string;
+}
+
+export interface Product {
+    productId: number;
+    catalogueId: number;
+    productName: string;
+    productIng: string;
+    productBestBefore: string;
+    productInst: string;
+    productInfo: string;
+    productPics: string;
+    productStatus: string; // 'ACTIVE' | 'INACTIVE' etc.
+    productDeliveryCost: number;
+    productQuantity: number;
+    createdAt: string;
+    productPrice: number;
+    productPriceAfterDiscount: number;
+    updatedAt: string;
+    productSize: ProductSize[];
+    productRatings: ProductRating[];
+    famous: boolean;
+    productImage?: string;
+    productOffer?: string;
+    multipleSetDiscount?: string;
+    multipleDiscountMoreThan?: string;
+    productColour?: ProductColour[];
+    productType?: string;
+}
+
+export interface ProductColour {
+    productColourId: number;
+    productId: number;
+    productPics: string;
+    colourStatus: string;
+    colour: string;
+}
+
+export interface UpdateProductRequest {
+    productId: number;
+    catalogueId: number;
+    productName: string;
+    productImage: string;
+    multipleSetDiscount: string;
+    multipleDiscountMoreThan: string;
+    productPrice: number;
+    productPriceAfterDiscount: number;
+    productOffer: string;
+    productIng: string;
+    productBestBefore: string;
+    productInst: string;
+    productInfo: string;
+    productPics: string;
+    productStatus: string;
+    productDeliveryCost: number;
+    productQuantity: number;
+    famous: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+    productType?: string;
+}
+
+export interface Catalogue {
+    categoryId: number;
+    catalogueId: number;
+    catalogueName: string;
+    catalogueDescription: string;
+    catalogueStatus: string; // 'ACTIVE' etc.
+    createdAt: string;
+    products: Product[];
+    catalogueImage?: string;
+}
+
+export interface CompanyFeature {
+    title: string;
+    description: string;
+    icon: string;
+    color?: string;
+    bgColor?: string;
+    iconColor?: string;
+}
+
+export interface CompanyDetails {
+    companyId: string;
+    companyName: string;
+    companyDomain: string;
+    companyPhone: string;
+    companyMessage: string | null;
+    companyEmail: string;
+    gstNumber: string;
+    logo: string;
+    banner: string;
+    companyCoupon: string;
+    ownerName: string;
+    ownerEmail: string;
+    companyStatus: string;
+    ownerPhone: string;
+    companyAddress: string;
+    companyCity: string;
+    companyState: string;
+    companyPinCode: string;
+    companyFssAi: string;
+    companyProductCategory: string;
+    deliveryBetween: string;
+    companyEstDate: string;
+    averageRating: number;
+    totalRating: number;
+    noOfRatings: number;
+    features?: CompanyFeature[];
+    companyRegisteredAt: string;
+    updatedAt: string;
+    minimumOrderCost: string;
+    freeDeliveryCost: string;
+    deliveryCost: string;
+    socialMediaLink: string | null;
+    about: string;
+    razorpayKeyId: string;
+    razorpayKeySecret: string;
+    razorpay?: boolean;
+    upiQrCode?: string;
+    upiId?: string;
+    waPhoneNumId?: string;
+    waToken?: string;
+    waOtpTemplateName?: string;
+    waOrderTemplateName?: string;
+    smePay?: boolean;
+    smePayKeyId?: string;
+    smePaySecret?: string;
+    cashFree?: boolean;
+    cashFreeKeyId?: string;
+    cashFreeSecret?: string;
+    manaBuyCredentials?: boolean;
+}
+
+export interface CompanyInventory {
+    companyId: number;
+    categories: Category[];
+}
+
+export interface Category {
+    categoryId: number;
+    categoryName: string;
+    catalogues: Catalogue[];
+    companyId: string;
+    categoryImage?: string;
+}
+
+export interface CategoryPublicResponse {
+    companyId: string;
+    categoryId: number;
+    categoryName: string;
+    categoryImage?: string;
+    categoryDescription?: string;
+    categoryStatus?: string;
+    createdAt?: string;
+}
+
+// ... existing interfaces ...
+
+// --- Create Request Interfaces ---
+
+export interface CreateCategoryRequest {
+    companyId: string;
+    categoryName: string;
+    categoryDescription: string;
+    categoryStatus: string;
+    categoryImage?: string;
+}
+
+export interface CreateCategoryResponse {
+    companyId: string;
+    categoryId: number;
+    categoryName: string;
+    categoryDescription: string;
+    categoryStatus: string;
+    categoryImage?: string;
+    createdAt: string;
+    catalogues: null | Catalogue[];
+}
+
+export interface UpdateCategoryRequest {
+    companyId: string;
+    categoryId: number;
+    categoryName: string;
+    categoryDescription: string;
+    categoryStatus: string;
+    categoryImage?: string;
+    createdAt: string;
+}
+
+export interface UpdateCategoryResponse {
+    companyId: string;
+    categoryId: number;
+    categoryName: string;
+    categoryDescription: string;
+    categoryStatus: string;
+    categoryImage?: string;
+    createdAt: string;
+}
+
+export interface CreateCatalogueRequest {
+    categoryId: string; // or number? User prompt showed "1" (string) but response has 1 (number). create request says "1".
+    catalogueName: string;
+    catalogueDescription: string;
+    catalogueImage?: string;
+}
+
+export interface CreateCatalogueResponse {
+    categoryId: number;
+    catalogueId: number;
+    catalogueName: string;
+    catalogueDescription: string;
+    catalogueStatus: string;
+    catalogueImage?: string;
+    createdAt: string;
+    products: null | Product[];
+}
+
+export interface UpdateCatalogueRequest {
+    categoryId: number;
+    catalogueId: number;
+    catalogueName: string;
+    catalogueDescription: string;
+    catalogueImage?: string;
+    catalogueStatus: string;
+    createdAt: string;
+}
+
+export interface UpdateCatalogueResponse {
+    categoryId: number;
+    catalogueId: number;
+    catalogueName: string;
+    catalogueDescription: string;
+    catalogueStatus: string;
+    catalogueImage?: string;
+    createdAt: string;
+}
+
+export interface CreateProductRequest {
+    catalogueId: number;
+    productName: string;
+    productIng: string;
+    productBestBefore: string;
+    productInst: string;
+    productInfo: string;
+    productPics: string;
+    productStatus: string;
+    famous: boolean;
+    productDeliveryCost: number;
+    productQuantity: number;
+    productPrice: number;
+    productPriceAfterDiscount: number;
+    productImage?: string;
+    productOffer?: string;
+    multipleSetDiscount?: string;
+    multipleDiscountMoreThan?: string;
+    productType?: string;
+}
+
+export interface CreateProductResponse {
+    productId: number;
+    catalogueId: number;
+    productName: string; // ... other fields same as Product
+    productStatus: string;
+    productQuantity: number;
+    productPrice: number;
+    productPriceAfterDiscount: number;
+    productImage?: string;
+    productOffer?: string;
+    multipleSetDiscount?: string;
+
+    multipleDiscountMoreThan?: string;
+    productType?: string;
+}
+
+export interface CreatePricingRequest {
+    productId: number;
+    productSizePrice?: number | null;
+    productSizePriceAfterDiscount?: number | null;
+    size: string;
+    sizeQuantity: number;
+    sizeStatus: string;
+}
+
+export interface CreatePricingResponse {
+    productSizeId: number;
+    productId: number;
+    productSizePrice: number;
+    productSizePriceAfterDiscount: number;
+    size: string;
+    sizeQuantity: number;
+    productSizeColours: ProductSizeColour[];
+    sizeStatus: string;
+}
+
+export interface UpdatePricingRequest {
+    productSizeId: number;
+    productId: number;
+    productSizePrice?: number | null;
+    productSizePriceAfterDiscount?: number | null;
+    size: string;
+    sizeQuantity: number;
+    sizeStatus: string;
+}
+
+export interface UpdatePricingResponse {
+    productSizeId: number;
+    productId: number;
+    productSizePrice: number;
+    productSizePriceAfterDiscount: number;
+    size: string;
+    sizeQuantity: number;
+    productSizeColours: ProductSizeColour[];
+}
+export interface CreateSizeColourRequest {
+    productSizeId: number;
+    colourName: string;
+    colourPrice: number;
+    productSizeColourQuantity: number;
+    productPics?: string;
+    sizeColourStatus: string;
+}
+
+export interface CreateSizeColourResponse {
+    productSizeColourId: number;
+    productSizeId: number;
+    colourName: string;
+    colourPrice: number;
+    productSizeColourQuantity: number;
+    productPics?: string;
+    sizeColourStatus: string;
+}
+
+export interface UpdateSizeColourRequest {
+    productSizeColourId: number;
+    productSizeId: number;
+    colourName: string;
+    colourPrice: number;
+    productSizeColourQuantity: number;
+    productPics?: string;
+    sizeColourStatus: string;
+}
+
+export interface UpdateSizeColourResponse {
+    productSizeColourId: number;
+    productSizeId: number;
+    colourName: string;
+    colourPrice: number;
+    productSizeColourQuantity: number;
+    productPics?: string;
+    sizeColourStatus: string;
+}
+
+export interface CustomerAddress {
+    customerAddressId: number;
+    addressName: string;
+    customerDrNum: string;
+    customerRoad: string;
+    customerCity: string;
+    customerState: string;
+    customerCountry: string;
+    customerPin: string;
+    customerId?: number;
+}
+
+export interface CustomerDetails {
+    customerId: number;
+    companyId: string;
+    customerName: string;
+    customerMobileNumber: string;
+    customerStatus: string;
+    customerEmailId: string;
+    createdAt: string;
+    customerAddress: CustomerAddress[];
+    customerImage?: string;
+}
+
+export interface UpdateCustomerRequest {
+    customerId: number;
+    companyId: string;
+    customerName: string;
+    customerMobileNumber: string;
+    customerStatus: string;
+    customerEmailId: string;
+    createdAt: string;
+    customerImage?: string;
+}
+
+// Validaton for checkout
+export interface CheckoutValidationItem {
+    productId: number;
+    sizeId: number | null; // Renamed from pricingId to sizeId as per requirement
+    productColourId: number | null;
+    productSizeColourId: number | null;
+}
+
+export interface CheckoutCheckResponse {
+    multipleSetDiscount: string | null;
+    multipleDiscountMoreThan: string | null;
+    productOffer: string | null;
+    productStatus: string;
+    productPrice: number;
+    productPriceAfterDiscount: number;
+    colourStatus: string | null;
+    colour: string | null;
+    colourQuantityAvailable: number | null;
+    sizeStatus: string | null;
+    productSizePrice: number | null;
+    productSizePriceAfterDiscount: number;
+    productSize: string | null;
+    productQuantityAvailable: number;
+    sizeQuantity: number;
+
+    // New fields requested
+    sizeColourName: string | null;
+    colourExtraPrice: number;
+    productSizeColourQuantity: number | null;
+    sizeColourStatus: string | null;
+    productSizeColourId: number | null;
+
+    // Existing but maybe deprecated or still used? Keeping for safety unless removal requested.
+    sizeColourAndPrice?: string[];
+
+    productId: number;
+    sizeId: number | null;
+    productColourId: number | null;
+}
+
+export interface CheckoutValidationRequest {
+    items: CheckoutValidationItem[];
+}
+
+
+// --- Order & Payment Interfaces ---
+
+export interface PaymentInitializationItem {
+    productId: number;
+    pricingId: number | null;
+    productSizeColourId: number | null;
+    quantity: number;
+}
+
+export interface PaymentInitializationRequest {
+    customerName: string;
+    customerPhoneNumber: string;
+    customerEmailId: string;
+    domainName: string;
+    customerAddress: string;
+    customerCity: string;
+    customerState: string;
+    customerCountry: string;
+    addressName: string;
+    shipmentAmount: number;
+    discount: string;
+    discountName: string;
+    discountAmount: number;
+    totalCost: number;
+    paymentMethod: string;
+    customerNote: string;
+    items: PaymentInitializationItem[];
+}
+
+export interface PaymentInitializationResponse {
+    razorpayOrderId: string;
+    razorpayKeyId: string;
+    grandTotal: number;
+    amountInPaise: number;
+    currency: string;
+    receiptId: string;
+}
+
+export interface CheckoutValidationProductDetail {
+    productStatus: string; // 'ACTIVE' | 'INACTIVE'
+    productPrice: number;
+    productPriceAfterDiscount?: number;
+    sizeColourAndPrice: string[]; // ["id:price", "1:20"]
+}
+
+export interface CheckoutValidationResponse {
+    productDetails: CheckoutValidationProductDetail[];
+}
+
+export interface PaymentVerificationRequest {
+    razorpayOrderId: string;
+    razorpayPaymentId: string;
+    razorpaySignature: string;
+}
+
+export interface PaymentVerificationResponse {
+    status: string; // 'success' | 'failed'
+    orderId?: string;
+    message?: string;
+}
+
+export interface CreateColourRequest {
+    productId: number;
+    productPics: string;
+    colourStatus: string;
+    colour: string;
+    productColourQuantity: number;
+}
+
+export interface CreateColourResponse {
+    productColourId: number;
+    productId: number;
+    productPics: string;
+    colourStatus: string;
+    colour: string;
+    productColourQuantity: number;
+}
+
+export interface UpdateColourRequest {
+    productColourId: number;
+    productId: number;
+    productPics: string;
+    colourStatus: string;
+    colour: string;
+    productColourQuantity: number;
+}
+
+export interface UpdateColourResponse {
+    productColourId: number;
+    productId: number;
+    productPics: string;
+    colourStatus: string;
+    colour: string;
+    productColourQuantity: number;
+}
+
+export interface SaveOrderItem {
+    productId: number;
+    productName: string;
+    productImage?: string | null;
+    productPrice?: number | null;
+    productPriceAfterDiscount?: number | null;
+    quantity: number;
+    totalCost: number;
+    // Optional Variant Fields
+    productColourId?: number | null;
+    productColour?: string;
+    productColourImage?: string;
+    productSizeId?: number | null;
+    productSizeName?: string;
+    productSizePrice?: number | null;
+    productSizePriceAfterDiscount?: number | null;
+    productSizeColourId?: number | null;
+    productSizeColourName?: string;
+    productSizeColourImage?: string;
+    productSizeColourExtraPrice?: number | null;
+    extraDiscount?: number | null;
+}
+
+export interface SaveOrderRequest {
+    orderId?: number; // Optional, likely generated by server but included in type for safety
+    orderNumber?: string;
+    companyId: string;
+    companyDomain: string;
+    customerId: number;
+    customerName: string;
+    customerPhone: string;
+    deliveryRoad: string; // Address Line
+    deliveryPin: string;
+    deliveryCity: string;
+    deliveryState: string;
+    orderStatus: string; // 'CREATED'
+    subTotal: number;
+    allDiscount: string;
+    extraDiscount?: number | null;
+    deliveryCost?: string;
+    finalTotalAmount: number;
+    paymentPic?: string | null;
+    createdAt?: string; // Optional
+    updatedAt?: string; // Optional
+    companyName?: string;
+    items: SaveOrderItem[];
+    waPhoneNumId?: string;
+    waToken?: string;
+    waOrderTemplateName?: string;
+    returnUrl?: string;
+    manaBuyCredentials?: boolean | null;
+}
+
+export interface SaveOrderResponse {
+    orderId: number;
+    orderNumber: string;
+    companyId: string;
+    companyDomain: string;
+    customerId: number;
+    customerName: string;
+    customerPhone: string;
+    deliveryRoad: string;
+    deliveryPin: string;
+    deliveryCity: string;
+    deliveryState: string;
+    orderStatus: string;
+    subTotal: number;
+    allDiscount: string; // e.g. "applied NEWYEAR25 changed 1000 to 750"
+    extraDiscount?: number | null;
+    deliveryCost?: string;
+    finalTotalAmount: number;
+    paymentPic: string | null;
+    createdAt: string;
+    updatedAt: string;
+    items: OrderResponseItem[];
+}
+
+export interface OrderResponseItem {
+    orderItemId: number;
+    productId: number;
+    productName: string;
+    productImage?: string | null;
+    productPrice?: number | null;
+    productPriceAfterDiscount?: number | null;
+    productColourId?: number | null;
+    productColour?: string | null;
+    productColourImage?: string | null;
+    productSizeId?: number | null;
+    productSizeName?: string | null;
+    productSizePrice?: number | null;
+    productSizePriceAfterDiscount?: number | null;
+    productSizeColourId?: number | null;
+    productSizeColourName?: string | null;
+    productSizeColourImage?: string | null;
+    productSizeColourExtraPrice?: number | null;
+    quantity: number;
+    eachCost?: number | null;
+    totalCost: number;
+    extraDiscount?: number | null;
+}
+
+export interface CompanyRegistrationRequest {
+    companyName: string;
+    companyDomain: string;
+    companyPhone: string;
+    companyMessage?: string | null;
+    companyEmail: string;
+    ownerName: string;
+    companyStatus?: string | null;
+    gstNumber: string;
+    logo: string;
+    banner: string;
+    razorpayKeyId?: string | null;
+    razorpayKeySecret?: string | null;
+    companyCoupon: string;
+    ownerEmail: string;
+    ownerPhone: string;
+    companyAddress: string;
+    companyCity: string;
+    companyState: string;
+    companyPinCode: string;
+    companyFssAi: string;
+    companyProductCategory: string;
+    deliveryBetween: string;
+    companyEstDate: string;
+    averageRating: number;
+    totalRating: number;
+    noOfRatings: number;
+    freeDeliveryCost: string;
+    deliveryCost?: string | null;
+    minimumOrderCost: string;
+    socialMediaLink: string | null;
+    razorpay?: boolean | null;
+    upiQrCode?: string | null;
+    upiId?: string | null;
+    about: string;
+    waPhoneNumId?: string;
+    waToken?: string;
+    waOtpTemplateName?: string;
+    waOrderTemplateName?: string;
+    smePay?: boolean | null;
+    smePayKeyId?: string | null;
+    smePaySecret?: string | null;
+    cashFree?: boolean | null;
+    cashFreeKeyId?: string | null;
+    cashFreeSecret?: string | null;
+    manaBuyCredentials?: boolean | null;
+}
+
+export interface UpdateCompanyRequest extends CompanyRegistrationRequest {
+    companyId: string;
+}
+
+export interface SmePayResponse {
+    status: boolean;
+    order_id: string;
+    external_reference_id: string;
+    provider: string;
+    payment_link: string;
+    transaction_id: string;
+    qr_code: string;
+    payment_status: string;
+    expires_at: number;
+    intents?: {
+        gpay?: string;
+        phonepe?: string;
+        paytm?: string;
+        [key: string]: string | undefined;
+    };
+    message: string;
+}
+
+export interface CashfreeOrderResponse {
+    paymentSessionId: string;
+    orderStatus: string;
+    orderId: string;
+}
+
+export interface SmePaymentStatusResponse {
+    status: string;
+}
+

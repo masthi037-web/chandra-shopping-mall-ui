@@ -1,0 +1,882 @@
+
+import { CompanyFeature } from '@/lib/api-types';
+
+
+export interface TenantMotion {
+    cardHover: string; // e.g., "translateY(-4px) scale(1.01)"
+    buttonTap: string; // "scale(0.96)"
+    pageEnter: string; // "fade-up"
+    duration: string; // "300ms"
+    easing: string; // "cubic-bezier(0.4, 0, 0.2, 1)"
+}
+
+export interface TenantTypography {
+    heading: {
+        weight: string; // "700"
+        letterSpacing: string; // "-0.02em"
+        transform: string; // "none" | "uppercase"
+    };
+    productName: {
+        weight: string; // "500"
+        letterSpacing: string; // "-0.01em"
+    };
+    price: {
+        weight: string; // "600"
+        tracking: string; // "tight"
+    };
+    button: {
+        uppercase: boolean;
+        weight: string; // "600"
+    };
+}
+
+export interface TenantLayout {
+    density: "comfortable" | "compact" | "luxury";
+    maxWidth: string; // "1280px"
+    gridGap: string; // "1.5rem"
+    sectionSpacing: string; // "4rem"
+}
+
+export interface TenantSurface {
+    header: "solid" | "glass" | "gradient";
+    footer: "dark" | "minimal" | "branded";
+    productCardStyle: "flat" | "elevated" | "outlined" | "glass";
+    productCardLayout?: "default" | "saree";
+}
+
+export interface TenantBrandTone {
+    mood: "calm" | "energetic" | "playful" | "serious" | "premium";
+    cornerStyle: "sharp" | "soft" | "mixed";
+    animationSpeed: "slow" | "normal" | "fast";
+}
+
+export interface TenantConfig {
+    id: string;
+    domain?: string; // Tenant Domain (e.g. localhost, example.com)
+    companyId?: string; // Dynamic DB Company ID
+    name: string;
+    theme: {
+        colors: {
+            primary: string;
+            primaryForeground: string;
+            secondary: string;
+            background: string;
+            foreground?: string;
+        };
+        radius: string;
+        fontFamily: string;
+        productCard?: {
+            backgroundColor: string;
+            radius: string;
+            shadow: string;
+            border: string;
+        };
+        categoryFrame?: 'circle' | 'square' | 'squircle';
+        catalogueFrame?: 'circle' | 'square' | 'squircle';
+        productFrame?: 'square' | 'normal' | 'round';
+    };
+    // New Advanced Configs
+    motion?: TenantMotion;
+    typography?: TenantTypography;
+    layout?: TenantLayout;
+    surface?: TenantSurface;
+    brandTone?: TenantBrandTone;
+
+    features: {
+        enableWishlist: boolean;
+        enableratings: boolean;
+        showStockCount: boolean;
+        enableStorePickup?: boolean;
+    };
+    featuresList?: CompanyFeature[];
+    text: {
+        checkoutButton: string;
+        emptyCartParams: string;
+        quickAddButton?: string;
+        searchPlaceholder?: string;
+        startsFrom?: string;
+        heroTitle?: string;
+        heroTitleHighlight?: string;
+        heroDescription?: string;
+    };
+    fetchAllAtOnce?: boolean;
+    maxImageSizeMB?: number;
+    seo?: {
+        title: string;
+        description: string;
+        keywords?: string[];
+        ogImage?: string;
+        googleVerification?: string;
+    };
+    categoryPage?: boolean;
+}
+
+export const DEFAULT_CONFIG: TenantConfig = {
+    id: "default",
+    domain: "babaihomefoods",
+    name: "Digi Turu",
+    theme: {
+        colors: {
+            primary: "180 80% 35%",
+            primaryForeground: "210 40% 98%",
+            secondary: "210 20% 94%",
+            background: "210 20% 98%",
+        },
+        radius: "0.5rem",
+        fontFamily: "var(--font-poppins)",
+        productCard: {
+            backgroundColor: "hsl(var(--card))",
+            radius: "1.5rem",
+            shadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+            border: "1px solid hsl(var(--border) / 0.5)",
+        },
+        categoryFrame: 'circle',
+        catalogueFrame: 'circle',
+        productFrame: 'normal',
+    },
+    // Default Advanced Configs
+    motion: {
+        cardHover: "translateY(-4px) scale(1.01)",
+        buttonTap: "scale(0.96)",
+        pageEnter: "fade-up",
+        duration: "300ms",
+        easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    typography: {
+        heading: { weight: "700", letterSpacing: "-0.02em", transform: "none" },
+        productName: { weight: "500", letterSpacing: "-0.01em" },
+        price: { weight: "600", tracking: "tight" },
+        button: { uppercase: false, weight: "600" }
+    },
+    layout: {
+        density: "comfortable",
+        maxWidth: "1280px",
+        gridGap: "1.5rem",
+        sectionSpacing: "4rem"
+    },
+    surface: {
+        header: "glass",
+        footer: "minimal",
+        productCardStyle: "elevated"
+    },
+    brandTone: {
+        mood: "calm",
+        cornerStyle: "soft",
+        animationSpeed: "normal"
+    },
+    features: {
+        enableWishlist: true,
+        enableratings: true,
+        showStockCount: true,
+        enableStorePickup: false,
+    },
+    text: {
+        checkoutButton: "Checkout securely",
+        emptyCartParams: "Discover our best sellers!",
+        quickAddButton: "Quick Add",
+        searchPlaceholder: "Search products, brands, and more...",
+        startsFrom: "Starts from",
+        heroTitle: "Taste of",
+        heroTitleHighlight: "Tradition",
+        heroDescription: "Handcrafted with passion, delivering authentic flavors straight to your doorstep.",
+    },
+    fetchAllAtOnce: true,
+    maxImageSizeMB: 2,
+    categoryPage: false,
+};
+
+const TENANT_MAP: Record<string, Partial<TenantConfig>> = {
+
+    "use1": {
+        id: "sk-fashions",
+        name: "SK Fashions",
+        fetchAllAtOnce: false,
+        theme: {
+            colors: {
+                primary: "346 84% 61%", // Pinkish Red (Fashionable)
+                primaryForeground: "0 0% 100%",
+                secondary: "340 20% 96%",
+                background: "340 10% 99%",
+            },
+            radius: "1rem",
+            fontFamily: "var(--font-outfit)", // Modern fashion font
+            productCard: {
+                backgroundColor: "white",
+                radius: "1rem",
+                shadow: "0 10px 30px -10px rgb(225 29 72 / 0.15)",
+                border: "1px solid rgb(225 29 72 / 0.1)",
+            },
+            categoryFrame: 'circle',
+            catalogueFrame: 'circle',
+            productFrame: 'normal',
+        },
+        brandTone: { mood: "premium", cornerStyle: "soft", animationSpeed: "slow" },
+        surface: { header: "glass", footer: "branded", productCardStyle: "elevated" },
+        text: {
+            checkoutButton: "Place Order",
+            emptyCartParams: "Your wardrobe implies it needs an update!",
+            quickAddButton: "Add to Bag",
+            searchPlaceholder: "Search for latest trends...",
+            startsFrom: "Starts at",
+            heroTitle: "Redefine Your",
+            heroTitleHighlight: "Style",
+            heroDescription: "Explore our exclusive collection of Menswear and Womenswear designed for the modern you.",
+        },
+        featuresList: [
+            {
+                title: "Trendsetting Styles",
+                description: "Curated for the fashion-forward",
+                icon: "Star",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
+                iconColor: "text-rose-600"
+            },
+            {
+                title: "Premium Fabric",
+                description: "Quality you can feel",
+                icon: "ShieldCheck",
+                color: "text-indigo-600",
+                bgColor: "bg-indigo-50",
+                iconColor: "text-indigo-600"
+            },
+            {
+                title: "Express Shipping",
+                description: "Get your look in no time",
+                icon: "Truck",
+                color: "text-teal-600",
+                bgColor: "bg-teal-50",
+                iconColor: "text-teal-600"
+            }
+        ]
+    },
+    // Yellow Fashions (Signature Yellow, Premium)
+    "sandhyacollections": {
+        id: "Sandhya Collections",
+        name: "Sandhya Collections",
+        fetchAllAtOnce: false,
+        maxImageSizeMB: 2,
+        categoryPage: false,
+        theme: {
+            colors: {
+                primary: "45 92% 55%", // Premium Golden Yellow
+                primaryForeground: "0 0% 0%",
+                secondary: "225 35% 15%", // Midnight Navy Lighter
+                background: "225 45% 10%", // Deep Midnight Navy
+                foreground: "210 40% 98%", // Off-white for dark mode
+            },
+
+            radius: "1.25rem",
+            fontFamily: "var(--font-outfit)",
+            productCard: {
+                backgroundColor: "hsl(225 40% 14%)", // Blended dark surface
+                radius: "1.25rem",
+                shadow: "0 15px 40px -10px rgb(0 0 0 / 0.5)",
+                border: "1px solid rgb(234 179 8 / 0.2)", // Subtle golden glint
+            },
+            categoryFrame: 'circle',
+            catalogueFrame: 'circle',
+            productFrame: 'round',
+        },
+        layout: {
+            density: "luxury",
+            maxWidth: "1440px",
+            gridGap: "2.5rem",
+            sectionSpacing: "8rem"
+        },
+        brandTone: { mood: "premium", cornerStyle: "soft", animationSpeed: "slow" },
+        surface: { header: "glass", footer: "branded", productCardStyle: "elevated" },
+        typography: {
+            heading: { weight: "900", letterSpacing: "-0.05em", transform: "none" },
+            productName: { weight: "500", letterSpacing: "-0.01em" },
+            price: { weight: "800", tracking: "tight" },
+            button: { uppercase: true, weight: "700" }
+        },
+        text: {
+            checkoutButton: "Checkout Order",
+            emptyCartParams: "Brighten up your wardrobe!",
+            quickAddButton: "Add to Bag",
+            searchPlaceholder: "Search the collection...",
+            startsFrom: "Starts at",
+            heroTitle: "Exquisite",
+            heroTitleHighlight: "Collection",
+            heroDescription: "Elevate your everyday look with our signature best-inspired luxury fashion pieces.",
+        },
+        seo: {
+            title: "Sandhya Collections | Luxury Designer Fashion & Boutiques",
+            description: "Discover exquisite luxury fashion at Sandhya Collections. Explore our curated range of signature designer wear, boutique styles, and high-fashion accessories.",
+            keywords: ["sandhya collections", "sandhya collections vizag", "luxury fashion", "designer boutique", "Sandhya Collections", "boutique wear", "exclusive fashion"],
+            googleVerification: "T9rDVvjti5Rs6KYiUD7eTB7Vn92jerBNIgcrAScUUWA",
+        },
+        featuresList: [
+            {
+                title: "Signature Design",
+                description: "Unique pieces that stand out",
+                icon: "Sparkles",
+                color: "text-yellow-600",
+                bgColor: "bg-yellow-50",
+                iconColor: "text-yellow-600"
+            },
+            {
+                title: "Exceptional Quality",
+                description: "Craftsmanship in every stitch",
+                icon: "Gem",
+                color: "text-amber-600",
+                bgColor: "bg-amber-50",
+                iconColor: "text-amber-600"
+            },
+            {
+                title: "Global Delivery",
+                description: "Fashion delivered anywhere",
+                icon: "Globe",
+                color: "text-slate-600",
+                bgColor: "bg-slate-50",
+                iconColor: "text-slate-600"
+            }
+        ]
+    },
+    "ananthajewellers": {
+        id: "Anantha Jewellers",
+        name: "Anantha Jewellers",
+        fetchAllAtOnce: false,
+        maxImageSizeMB: 2,
+        categoryPage: true,
+        theme: {
+            colors: {
+                primary: "46 65% 52%", // Gold (#D4AF37)
+                primaryForeground: "0 0% 0%", // Black text on Gold
+                secondary: "0 0% 10%", // Dark gray
+                background: "0 0% 0%", // Black (#000000)
+                foreground: "0 0% 100%", // White text
+            },
+            radius: "0px", // Sharp corners
+            fontFamily: "var(--font-playfair)", // Classic elegant serif
+            productCard: {
+                backgroundColor: "#000000", // Black (#000000)
+                radius: "0px", // Sharp corners
+                shadow: "none",
+                border: "1px solid #D4AF37", // Gold border (#D4AF37)
+            },
+            categoryFrame: 'square',
+            catalogueFrame: 'square',
+            productFrame: 'square',
+        },
+        features: {
+            enableWishlist: true,
+            enableratings: true,
+            showStockCount: true,
+            enableStorePickup: true,
+        },
+        brandTone: { mood: "premium", cornerStyle: "sharp", animationSpeed: "slow" },
+        surface: { header: "glass", footer: "dark", productCardStyle: "glass" },
+        typography: {
+            heading: { weight: "600", letterSpacing: "0.02em", transform: "uppercase" },
+            productName: { weight: "400", letterSpacing: "0" },
+            price: { weight: "700", tracking: "wider" },
+            button: { uppercase: true, weight: "600" }
+        },
+        motion: { // Elegant slow fades
+            cardHover: "translateY(-1px)",
+            buttonTap: "scale(0.98)",
+            duration: "500ms",
+            easing: "ease-in-out",
+            pageEnter: "fade-in"
+        },
+        text: {
+            checkoutButton: "Secure Checkout",
+            emptyCartParams: "Your jewelry box is empty.",
+            quickAddButton: "Add to Bag",
+            searchPlaceholder: "Search collections...",
+            startsFrom: "Begins at",
+            heroTitle: "Timeless",
+            heroTitleHighlight: "Elegance",
+            heroDescription: "Discover handcrafted purity and intricate heritage designs made for a lifetime of memories.",
+        },
+        seo: {
+            title: "Anantha Jewellers | Exquisite Gold & Heritage Jewelry",
+            description: "Discover the finest handcrafted gold jewelry at Anantha Jewellers. Heirloom pieces, bridal collections, and master artisan designs since generations.",
+            keywords: ["Anantha", "anantha jewellers narasaraopet", "gold jewelry", "anantha jewellers", "heritage jewelry", "Indian jewelry boutique", "handcrafted gold"],
+            googleVerification: "DnT_FmQE40jrJ-YeuK0YRe4FhQsANbvMbiB0WeiSqQs",
+        },
+        featuresList: [
+            {
+                title: "Latest Designs",
+                description: "Picked Latest designs by experts",
+                icon: "Gem",
+                color: "text-amber-800",
+                bgColor: "bg-amber-100",
+                iconColor: "text-amber-800"
+            },
+            {
+                title: "Heritage Craft",
+                description: "Made by master artisans",
+                icon: "Crown",
+                color: "text-amber-800",
+                bgColor: "bg-amber-100",
+                iconColor: "text-amber-800"
+            },
+            {
+                title: "Lifetime Care",
+                description: "Complimentary maintenance",
+                icon: "Heart",
+                color: "text-rose-800",
+                bgColor: "bg-rose-100",
+                iconColor: "text-rose-800"
+            }
+        ]
+    },
+    // 2. Midnight Tech (Dark, Cyberpunk)
+    "midnighttech.store": {
+        id: "midnight-tech",
+        name: "Midnight Tech",
+        fetchAllAtOnce: true,
+        theme: {
+            colors: {
+                primary: "262 80% 50%",
+                primaryForeground: "0 0% 100%",
+                secondary: "240 10% 15%",
+                background: "220 30% 12%",
+                foreground: "0 0% 100%", // White text
+            },
+            radius: "2px",
+            fontFamily: "var(--font-inter)",
+            productCard: {
+                backgroundColor: "hsl(220 30% 16%)",
+                radius: "4px",
+                shadow: "0 0 15px rgb(124 58 237 / 0.2)",
+                border: "1px solid rgb(124 58 237 / 0.5)", // More visible border
+            },
+            categoryFrame: 'square',
+            catalogueFrame: 'square',
+            productFrame: 'square',
+        },
+        motion: { // Cyberpunk needs fast, glitch-like usage
+            cardHover: "translateY(-2px) scale(1.02)",
+            buttonTap: "scale(0.98)",
+            pageEnter: "fade-in",
+            duration: "150ms",
+            easing: "steps(4)"
+        },
+        typography: {
+            heading: { weight: "800", letterSpacing: "0.05em", transform: "uppercase" },
+            productName: { weight: "600", letterSpacing: "0.02em" },
+            price: { weight: "700", tracking: "widest" },
+            button: { uppercase: true, weight: "700" }
+        },
+        surface: { header: "solid", footer: "dark", productCardStyle: "outlined" },
+        text: {
+            checkoutButton: "Secure Hardware",
+            emptyCartParams: "System integrity: Empty.",
+            quickAddButton: "Initialize",
+            searchPlaceholder: "Command: Search...",
+            startsFrom: "Base Model:",
+        }
+    },
+    // 3. Sweet Treats (Pink, Playful)
+    "intihomefoods": {
+        id: "sweet-treats",
+        name: "Sweet Treats",
+        fetchAllAtOnce: true,
+        theme: {
+            colors: {
+                primary: "330 85% 60%",
+                primaryForeground: "0 0% 100%",
+                secondary: "330 100% 96%",
+                background: "330 30% 98%",
+            },
+            radius: "1.5rem",
+            fontFamily: "var(--font-poppins)",
+            productCard: {
+                backgroundColor: "white",
+                radius: "2rem",
+                shadow: "0 10px 15px -3px rgb(236 72 153 / 0.2)",
+                border: "2px dashed rgb(236 72 153 / 0.5)", // Fun dashed border
+            },
+        },
+        motion: { // Bouncy and fun
+            cardHover: "translateY(-8px) rotate(1deg)",
+            buttonTap: "scale(0.9)",
+            pageEnter: "fade-up",
+            duration: "400ms",
+            easing: "cubic-bezier(0.68, -0.55, 0.265, 1.55)" // Bouncy
+        },
+        layout: { density: "comfortable", maxWidth: "1200px", gridGap: "2rem", sectionSpacing: "5rem" },
+        text: {
+            checkoutButton: "Get My Goodies",
+            emptyCartParams: "No treats yet? 🍬",
+            quickAddButton: "Grab it!",
+            searchPlaceholder: "Find your cravings...",
+            startsFrom: "Treats from",
+            heroTitle: "Taste of",
+            heroTitleHighlight: "Tradition",
+            heroDescription: "Handcrafted with passion, delivering authentic flavors straight to your doorstep.",
+        }
+    },
+    // 4. Urban Sneakers (Monochrome, Streetwear)
+    "urbansneakers.com": {
+        id: "urban-sneakers",
+        name: "Urban Sneakers",
+        fetchAllAtOnce: true,
+        theme: {
+            colors: {
+                primary: "0 0% 0%",
+                primaryForeground: "0 0% 100%",
+                secondary: "0 0% 93%",
+                background: "0 0% 95%",
+            },
+            radius: "0px",
+            fontFamily: "var(--font-inter)",
+            productCard: {
+                backgroundColor: "white",
+                radius: "0px",
+                shadow: "none",
+                border: "1px solid black",
+            }
+        },
+        layout: { density: "compact", maxWidth: "1600px", gridGap: "1rem", sectionSpacing: "2rem" },
+        surface: { header: "solid", footer: "dark", productCardStyle: "flat" },
+        text: {
+            checkoutButton: "COP NOW",
+            emptyCartParams: "Cart is empty.",
+            quickAddButton: "ADD +",
+            searchPlaceholder: "SEARCH DROPS",
+            startsFrom: "MIN:",
+        }
+    },
+    // 5. Royal Gold (Luxury, Serif)
+    "royalgold.jewelry": {
+        id: "royal-gold",
+        name: "Royal Gold",
+        fetchAllAtOnce: true,
+        theme: {
+            colors: {
+                primary: "45 90% 45%",
+                primaryForeground: "0 0% 100%",
+                secondary: "45 20% 90%",
+                background: "40 20% 97%",
+            },
+            radius: "2px",
+            fontFamily: "var(--font-playfair)",
+            productCard: {
+                backgroundColor: "white",
+                radius: "2px",
+                shadow: "0 20px 25px -5px rgb(0 0 0 / 0.05)",
+                border: "none",
+            }
+        },
+        layout: { density: "luxury", maxWidth: "1100px", gridGap: "3rem", sectionSpacing: "6rem" },
+        motion: { duration: "600ms", easing: "ease-out", cardHover: "translateY(-2px)", buttonTap: "scale(0.99)", pageEnter: "fade-in" },
+        features: { enableWishlist: true, enableratings: false, showStockCount: false },
+        text: {
+            checkoutButton: "Request Consultation",
+            emptyCartParams: "Your selection is empty.",
+            quickAddButton: "Select",
+            searchPlaceholder: "Search collection...",
+            startsFrom: "Beginning at",
+        }
+    },
+    // 6. Spicy Bites (Red, Food)
+    "spicybites.food": {
+        id: "spicy-bites",
+        name: "Spicy Bites",
+        fetchAllAtOnce: true,
+        theme: {
+            colors: {
+                primary: "10 80% 50%",
+                primaryForeground: "0 0% 100%",
+                secondary: "20 50% 96%",
+                background: "15 30% 98%",
+            },
+            radius: "0.75rem",
+            fontFamily: "var(--font-poppins)",
+            productCard: {
+                backgroundColor: "white",
+                radius: "1rem",
+                shadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                border: "none",
+            }
+        },
+        text: {
+            checkoutButton: "Order Now",
+            emptyCartParams: "Hungry? Add something tasty!",
+            quickAddButton: "Add +",
+            searchPlaceholder: "Search menu...",
+            startsFrom: "From",
+        }
+    },
+    // 7. Ocean Blue (Calm, Water)
+    "oceanblue.water": {
+        id: "ocean-blue",
+        name: "Ocean Blue",
+        fetchAllAtOnce: true,
+        theme: {
+            colors: {
+                primary: "200 90% 40%",
+                primaryForeground: "0 0% 100%",
+                secondary: "200 50% 96%",
+                background: "200 30% 96%",
+            },
+            radius: "1.2rem",
+            fontFamily: "var(--font-poppins)",
+            productCard: {
+                backgroundColor: "white",
+                radius: "1.2rem",
+                shadow: "0 4px 6px -1px rgb(56 189 248 / 0.2)",
+                border: "1px solid rgb(56 189 248 / 0.2)",
+            }
+        },
+        text: {
+            checkoutButton: "Get Hydrated",
+            emptyCartParams: "Please add items.",
+            quickAddButton: "Add",
+            searchPlaceholder: "Search catalog...",
+            startsFrom: "From",
+        }
+    },
+    // 8. Minimalist Home (Gray, Clean)
+    "minimalhome.decor": {
+        id: "minimal-home",
+        name: "Minimal Home",
+        fetchAllAtOnce: true,
+        theme: {
+            colors: {
+                primary: "0 0% 40%",
+                primaryForeground: "0 0% 100%",
+                secondary: "0 0% 95%",
+                background: "0 0% 98%",
+            },
+            radius: "4px",
+            fontFamily: "var(--font-inter)",
+            productCard: {
+                backgroundColor: "#ffffff",
+                radius: "4px",
+                shadow: "none",
+                border: "none",
+            }
+        },
+        layout: { density: "luxury", maxWidth: "1400px", gridGap: "4rem", sectionSpacing: "4rem" },
+        text: {
+            checkoutButton: "Purchase",
+            emptyCartParams: "Space available.",
+            quickAddButton: "Add",
+            searchPlaceholder: "Search...",
+            startsFrom: "Start:",
+        }
+    },
+    // 9. Kids Zone (Purple/Yellow, Fun)
+    "kidzone.toys": {
+        id: "kid-zone",
+        name: "Kid Zone",
+        fetchAllAtOnce: true,
+        theme: {
+            colors: {
+                primary: "270 90% 60%",
+                primaryForeground: "0 0% 100%",
+                secondary: "50 90% 60%",
+                background: "50 100% 96%",
+            },
+            radius: "1.5rem",
+            fontFamily: "var(--font-poppins)",
+            productCard: {
+                backgroundColor: "white",
+                radius: "2rem",
+                shadow: "4px 4px 0px 0px #FCD34D",
+                border: "2px solid #FCD34D",
+            }
+        },
+        motion: { // Playful
+            cardHover: "rotate(2deg) scale(1.05)",
+            buttonTap: "scale(0.9) rotate(-2deg)",
+            duration: "300ms",
+            easing: "cubic-bezier(0.34, 1.56, 0.64, 1)", // Springy
+            pageEnter: "zoom-in"
+        },
+        text: {
+            checkoutButton: "Let's Play!",
+            emptyCartParams: "Toy box is empty!",
+            quickAddButton: "I want this!",
+            searchPlaceholder: "Search for toys...",
+            startsFrom: "Just",
+        }
+    },
+    // 10. Classic Books (Brown, Serif)
+    "classicbooks.read": {
+        id: "classic-books",
+        name: "Classic Books",
+        fetchAllAtOnce: true,
+        theme: {
+            colors: {
+                primary: "25 30% 30%",
+                primaryForeground: "0 0% 100%",
+                secondary: "35 30% 90%",
+                background: "35 25% 94%",
+            },
+            radius: "4px",
+            fontFamily: "var(--font-playfair)",
+            productCard: {
+                backgroundColor: "#fffdf5",
+                radius: "2px",
+                shadow: "0 2px 4px rgb(0 0 0 / 0.1)",
+                border: "1px solid #e5e5e5",
+            }
+        },
+        typography: {
+            heading: { weight: "600", letterSpacing: "0", transform: "none" },
+            productName: { weight: "700", letterSpacing: "0" }, // Bold titles
+            price: { weight: "400", tracking: "normal" }, // Subtle price
+            button: { uppercase: true, weight: "500" }
+        },
+        text: {
+            checkoutButton: "Checkout",
+            emptyCartParams: "Your reading list is empty.",
+            quickAddButton: "Add to Shelf",
+            searchPlaceholder: "Search titles...",
+            startsFrom: "Price:",
+        }
+    },
+
+    // Existing Clients
+    "skfashions": {
+        id: "skfashions",
+        name: "SK Fashions",
+        fetchAllAtOnce: true,
+        maxImageSizeMB: 2,
+        theme: {
+            colors: {
+                primary: "180 80% 35%",
+                primaryForeground: "210 40% 98%",
+                secondary: "210 20% 94%",
+                background: "210 20% 98%",
+            },
+            categoryFrame: 'circle',
+            catalogueFrame: 'circle',
+            productFrame: 'round',
+            radius: "0.5rem",
+            fontFamily: "var(--font-poppins)",
+            productCard: {
+                backgroundColor: "hsl(var(--card))",
+                radius: "1.5rem",
+                shadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                border: "1px solid hsl(var(--border) / 0.5)",
+            }
+        },
+        text: {
+            checkoutButton: "Checkout securely",
+            emptyCartParams: "Discover our best sellers!",
+            quickAddButton: "Quick Add",
+            searchPlaceholder: "Search products, brands, and more...",
+            startsFrom: "Starts from",
+        }
+    },
+    // Tirumala Sarees
+    "tirumalasarees": {
+        id: "Tirumala Sarees",
+        name: "Tirumala Sarees",
+        fetchAllAtOnce: false,
+        maxImageSizeMB: 2,
+        categoryPage: false,
+        theme: {
+            colors: {
+                primary: "353 82% 58%", // Red from the image (approx #eb3e45)
+                primaryForeground: "0 0% 100%",
+                secondary: "0 0% 96%", // Light gray 
+                background: "0 0% 100%", // White for clean e-commerce
+                foreground: "0 0% 10%",
+            },
+            radius: "0.2rem", // minimal radius
+            fontFamily: "var(--font-outfit)",
+            productCard: {
+                backgroundColor: "white",
+                radius: "0px",
+                shadow: "none",
+                border: "none",
+            },
+            categoryFrame: 'square',
+            catalogueFrame: 'square',
+            productFrame: 'normal',
+        },
+        layout: {
+            density: "luxury",
+            maxWidth: "1440px",
+            gridGap: "2.5rem",
+            sectionSpacing: "6rem"
+        },
+        brandTone: { mood: "premium", cornerStyle: "sharp", animationSpeed: "slow" },
+        surface: { header: "glass", footer: "branded", productCardStyle: "flat", productCardLayout: "saree" },
+        typography: {
+            heading: { weight: "800", letterSpacing: "0", transform: "none" },
+            productName: { weight: "500", letterSpacing: "0" },
+            price: { weight: "700", tracking: "normal" },
+            button: { uppercase: false, weight: "600" }
+        },
+        text: {
+            checkoutButton: "Proceed to Checkout",
+            emptyCartParams: "Your bag is empty.",
+            quickAddButton: "Add to Bag",
+            searchPlaceholder: "Search sarees...",
+            startsFrom: "Starts at",
+        }
+    },
+    // 12. Localhost
+    "localhost:3000": {
+        fetchAllAtOnce: true,
+    },
+};
+
+export function resolveTenantConfig(domain: string): TenantConfig {
+    const specificConfig = TENANT_MAP[domain] || {};
+
+    const baseTheme = {
+        ...DEFAULT_CONFIG.theme,
+        ...(specificConfig.theme || {}),
+        colors: {
+            ...DEFAULT_CONFIG.theme.colors,
+            ...(specificConfig.theme?.colors || {}),
+        },
+        productCard: {
+            ...DEFAULT_CONFIG.theme.productCard!,
+            ...(specificConfig.theme?.productCard || {}),
+        }
+    };
+
+    // Recursive merge for deep objects (simplified for now, assuming 1-level deep overrides or replace)
+    // For advanced properties, spreading is usually safer for granular overrides if implemented deeply.
+    // For now, simple spread works if tenants provide full objects or we accept replacing the whole block.
+    // To allow partial overrides, we should do:
+
+    const resolveMotion = { ...DEFAULT_CONFIG.motion, ...(specificConfig.motion || {}) } as TenantMotion;
+    const resolveTypography = {
+        ...DEFAULT_CONFIG.typography, ...specificConfig.typography,
+        heading: { ...DEFAULT_CONFIG.typography?.heading, ...specificConfig.typography?.heading },
+        productName: { ...DEFAULT_CONFIG.typography?.productName, ...specificConfig.typography?.productName },
+        price: { ...DEFAULT_CONFIG.typography?.price, ...specificConfig.typography?.price },
+        button: { ...DEFAULT_CONFIG.typography?.button, ...specificConfig.typography?.button },
+    } as TenantTypography;
+
+    const resolveLayout = { ...DEFAULT_CONFIG.layout, ...(specificConfig.layout || {}) } as TenantLayout;
+    const resolveSurface = { ...DEFAULT_CONFIG.surface, ...(specificConfig.surface || {}) } as TenantSurface;
+    const resolveBrandTone = { ...DEFAULT_CONFIG.brandTone, ...(specificConfig.brandTone || {}) } as TenantBrandTone;
+
+
+    return {
+        ...DEFAULT_CONFIG,
+        ...specificConfig,
+        domain, // Inject the resolved domain
+        theme: baseTheme,
+        motion: resolveMotion,
+        typography: resolveTypography,
+        layout: resolveLayout,
+        surface: resolveSurface,
+        brandTone: resolveBrandTone,
+
+        features: {
+            ...DEFAULT_CONFIG.features,
+            ...(specificConfig.features || {}),
+        },
+        featuresList: specificConfig.featuresList, // Pass through
+        text: {
+            ...DEFAULT_CONFIG.text,
+            ...(specificConfig.text || {}),
+        },
+        categoryPage: specificConfig.categoryPage !== undefined ? specificConfig.categoryPage : DEFAULT_CONFIG.categoryPage,
+    };
+}
