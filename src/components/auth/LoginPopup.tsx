@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 export default function LoginPopup() {
-    const { domain } = useTenant();
+    const { domain, id } = useTenant();
     const { companyDetails } = useCart();
     const { toast } = useToast();
 
@@ -141,7 +141,7 @@ export default function LoginPopup() {
                 (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('10.12.'));
 
             if (isLocalhost && (otp === '1234' || otp === '5678')) {
-                const mockRole = otp === '1234' ? 'ADMIN' : 'CUSTOMER';
+                const mockRole = otp === '1234' ? 'OWNER' : 'CUSTOMER';
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('userRole', mockRole);
                 localStorage.setItem('accessToken', 'mock-access-token');
@@ -162,7 +162,7 @@ export default function LoginPopup() {
             const response = await authService.login(
                 phoneNumber,
                 otp,
-                domain || 'babaihomefoods',
+                id || domain || 'chandra-shopping',
                 companyDetails?.manaBuyCredentials
             );
 

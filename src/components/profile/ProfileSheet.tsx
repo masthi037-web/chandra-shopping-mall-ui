@@ -27,7 +27,7 @@ import { useCart } from '@/hooks/use-cart';
 export function ProfileSheet({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const { toast } = useToast();
-    const { domain, companyId } = useTenant();
+    const { domain, id, companyId } = useTenant();
     const { setWishlistOpen } = useWishlist();
     const { setCartOpen, companyDetails } = useCart();
 
@@ -258,7 +258,7 @@ export function ProfileSheet({ children }: { children: React.ReactNode }) {
                 (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('10.12.'));
 
             if (isLocalhost && (otp === '1234' || otp === '5678')) {
-                const mockRole = otp === '1234' ? 'ADMIN' : 'CUSTOMER';
+                const mockRole = otp === '1234' ? 'OWNER' : 'CUSTOMER';
                 
                 // Show success animation
                 setShowSuccess(true);
@@ -272,7 +272,7 @@ export function ProfileSheet({ children }: { children: React.ReactNode }) {
                 return;
             }
 
-            const response = await authService.login(phoneNumber, otp, domain || 'babaihomefoods', companyDetails?.manaBuyCredentials);
+            const response = await authService.login(phoneNumber, otp, id || domain || 'chandra-shopping', companyDetails?.manaBuyCredentials);
 
             // Reset attempts on success
             localStorage.removeItem('login_attempts_count');
