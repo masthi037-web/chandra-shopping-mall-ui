@@ -363,7 +363,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
     }
 
     return (
-        <div className="bg-background min-h-screen">
+        <div className="bg-transparent min-h-screen">
             {/* Hero Section - Rendered in Server Component */}
 
             <div className="space-y-12 pb-20">
@@ -479,12 +479,13 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                 <div className="container mx-auto px-4 space-y-24">
                     {/* Categories Section */}
                     <section id="shop-now" className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 scroll-mt-24">
-                        <div className="flex flex-col items-center justify-center mb-8 text-center">
+                        {/* Categories Title Card */}
+                        <div className="flex flex-col items-center justify-center mb-8 text-center py-8 px-6 rounded-2xl bg-[#faf7f2]/90 border border-[#eadeca]/50 shadow-sm backdrop-blur-md">
                             {isChandra ? (
                                 <div className="flex flex-col items-center justify-center">
-                                    <div className="flex items-center gap-3 justify-center text-rose-500 font-bold mb-2">
+                                    <div className="flex items-center gap-3 justify-center text-[#aa5e50] font-bold mb-2">
                                         <span className="text-xl">♥</span>
-                                        <h2 className="text-3xl font-serif uppercase tracking-[0.15em] text-[#1a1a1a]">
+                                        <h2 className="text-3xl font-serif uppercase tracking-[0.15em] text-[#5445a0]">
                                             Dipped in Love
                                         </h2>
                                         <span className="text-xl">♥</span>
@@ -525,7 +526,7 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                         </div>
 
                         {categories.length > 0 ? (
-                            <div className="space-y-12">
+                            <div className="space-y-12 py-8 px-6 rounded-3xl bg-[#faf7f2]/90 border border-[#eadeca]/50 shadow-sm backdrop-blur-md">
                                 {/* Category Tabs/Bubbles */}
                                 <div className="flex overflow-x-auto pb-4 gap-4 md:gap-6 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth md:justify-center">
                                     {(tenant.id.toLowerCase().includes('sandhya') ? categories.slice(0, 2) : categories).map(category => (
@@ -552,8 +553,8 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                             </div>
                                             <span className={cn(
                                                 "text-xs md:text-sm font-semibold transition-colors text-center leading-tight max-w-[100px] md:max-w-[120px] break-words whitespace-normal px-1",
-                                                isChandra ? "font-serif text-[#1a1a1a]" : (tenant.id.toLowerCase().includes('anantha') ? "font-display uppercase tracking-widest text-[10px]" : "line-clamp-2"),
-                                                !categoryPage && currentActiveCategoryId === category.id ? "text-primary font-bold" : "text-muted-foreground group-hover:text-foreground"
+                                                isChandra ? "font-serif text-[#aa5e50]" : (tenant.id.toLowerCase().includes('anantha') ? "font-display uppercase tracking-widest text-[10px]" : "line-clamp-2"),
+                                                !categoryPage && currentActiveCategoryId === category.id ? "text-[#5445a0] font-bold" : "text-muted-foreground group-hover:text-foreground"
                                             )}>
                                                 {category.name}
                                             </span>
@@ -562,13 +563,13 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 bg-secondary/20 rounded-3xl border border-dashed border-border">
-                                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-                                    <Sparkles className="w-8 h-8 text-muted-foreground" />
+                            <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 bg-[#faf7f2]/90 border border-[#eadeca]/50 rounded-3xl shadow-sm backdrop-blur-md">
+                                <div className="w-16 h-16 bg-[#eadeca]/20 rounded-full flex items-center justify-center">
+                                    <Sparkles className="w-8 h-8 text-[#aa5e50]" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold">No categories found</h3>
-                                    <p className="text-muted-foreground">Please check back later for new arrivals.</p>
+                                    <h3 className="text-lg font-semibold text-[#5445a0]">No categories found</h3>
+                                    <p className="text-muted-foreground text-sm">Please check back later for new arrivals.</p>
                                 </div>
                             </div>
                         )}
@@ -578,9 +579,9 @@ export default function HomeClient({ initialCategories, companyDetails, fetchAll
                         <>
                             <SectionDivider />
                             <section className="animate-in fade-in slide-in-from-bottom-6 duration-700">
-                                <div className="text-center mb-10">
-                                    <h2 className="text-3xl font-serif tracking-[0.15em] uppercase text-[#1a1a1a]">Bestseller Sarees</h2>
-                                    <div className="w-12 h-0.5 bg-amber-500 mx-auto mt-3" />
+                                <div className="text-center mb-10 py-8 px-6 rounded-2xl bg-[#faf7f2]/90 border border-[#eadeca]/50 shadow-sm backdrop-blur-md">
+                                    <h2 className="text-3xl font-serif tracking-[0.15em] uppercase text-[#5445a0]">Bestseller Sarees</h2>
+                                    <div className="w-12 h-0.5 bg-[#aa5e50] mx-auto mt-3" />
                                 </div>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                                     {bestsellerSarees.map(product => (

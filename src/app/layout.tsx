@@ -1,10 +1,10 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { headers } from 'next/headers';
 import { Suspense } from 'react';
 import Loading from './loading';
 import AppShell from '@/components/layout/AppShell';
+import { ClientBackground } from '@/components/common/ClientBackground';
 
 export const metadata: Metadata = {
   title: 'ManaBuy',
@@ -27,12 +27,15 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased h-full bg-background">
-        <Suspense fallback={<Loading />}>
-          <AppShell companyDomain={companyDomain}>
-            {children}
-          </AppShell>
-        </Suspense>
+      <body className="font-body antialiased h-full bg-background relative">
+        <ClientBackground />
+        <div className="relative z-10 min-h-full">
+          <Suspense fallback={<Loading />}>
+            <AppShell companyDomain={companyDomain}>
+              {children}
+            </AppShell>
+          </Suspense>
+        </div>
       </body>
     </html>
   );

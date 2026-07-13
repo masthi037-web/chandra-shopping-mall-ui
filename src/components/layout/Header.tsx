@@ -185,7 +185,7 @@ const Header = ({ companyName = "ManaBuy", fetchAllAtOnce = true }: { companyNam
       <header className={cn(
         "sticky top-0 z-40 w-full border-b shadow-sm",
         isChandra 
-          ? "bg-[#f8f5ee] border-[#e8e4db] text-[#1a1a1a]" 
+          ? "bg-[#faf7f2]/85 backdrop-blur-md border-[#eadeca]/50 text-stone-900" 
           : "bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 border-b"
       )}>
         <div className="container mx-auto flex h-20 items-center justify-between px-4 lg:px-8">
