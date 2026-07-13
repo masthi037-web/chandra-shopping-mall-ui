@@ -83,30 +83,31 @@ export function TrendingCarousel({ products }: TrendingCarouselProps) {
     };
 
     return (
-        <section className="w-full py-16 bg-gradient-to-b from-background via-secondary/10 to-background overflow-hidden">
+        <div className="w-full py-8 space-y-8 bg-transparent">
+            {/* Section Header Card */}
             <div className="container mx-auto px-4">
-                
-                {/* Section Header */}
-                <div className="flex flex-col items-center justify-center text-center mb-12">
+                <div className="flex flex-col items-center justify-center text-center py-8 px-6 rounded-2xl bg-[#faf7f2]/90 border border-[#eadeca]/50 shadow-sm backdrop-blur-md">
                     <div className="flex items-center gap-2 mb-3">
                         <span className="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0" />
-                        <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">Video Shopping</span>
+                        <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#aa5e50]">Video Shopping</span>
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight leading-tight uppercase font-headline">
-                        Trending Styles <span className="text-primary">On SALE</span>
+                    <h2 className="text-2xl md:text-3xl font-black text-[#5445a0] tracking-tight leading-tight uppercase font-headline">
+                        Trending Styles <span className="text-[#aa5e50]">On SALE</span>
                     </h2>
-                    <p className="text-muted-foreground mt-2 max-w-md text-sm">
+                    <p className="text-muted-foreground mt-2 max-w-md text-xs sm:text-sm">
                         Tap the videos to play, view designer details, and explore hot arrivals.
                     </p>
                 </div>
+            </div>
 
-                {/* 3D Stack Slider Container */}
-                <div className="relative flex items-center justify-center h-[520px] md:h-[580px] w-full max-w-5xl mx-auto">
+            {/* 3D Stack Slider Container Card */}
+            <div className="container mx-auto px-4">
+                <div className="relative flex items-center justify-center h-[520px] md:h-[580px] w-full max-w-5xl mx-auto rounded-3xl bg-[#faf7f2]/90 border border-[#eadeca]/50 shadow-sm py-6 px-4 md:px-8 backdrop-blur-md">
                     
                     {/* Navigation Buttons */}
                     <button
                         onClick={prevSlide}
-                        className="absolute left-2 md:left-8 z-40 p-3 rounded-full bg-background/80 hover:bg-background border border-border shadow-lg text-foreground hover:scale-105 transition-all select-none"
+                        className="absolute left-4 md:left-8 z-40 p-3 rounded-full bg-background hover:bg-secondary border border-border shadow-lg text-foreground hover:scale-105 transition-all select-none"
                         aria-label="Previous slide"
                     >
                         <ChevronLeft className="w-5 h-5" />
@@ -114,7 +115,7 @@ export function TrendingCarousel({ products }: TrendingCarouselProps) {
 
                     <button
                         onClick={nextSlide}
-                        className="absolute right-2 md:right-8 z-40 p-3 rounded-full bg-background/80 hover:bg-background border border-border shadow-lg text-foreground hover:scale-105 transition-all select-none"
+                        className="absolute right-4 md:right-8 z-40 p-3 rounded-full bg-background hover:bg-secondary border border-border shadow-lg text-foreground hover:scale-105 transition-all select-none"
                         aria-label="Next slide"
                     >
                         <ChevronRight className="w-5 h-5" />
@@ -229,8 +230,7 @@ export function TrendingCarousel({ products }: TrendingCarouselProps) {
                         })}
                     </div>
                 </div>
-
             </div>
-        </section>
+        </div>
     );
 }

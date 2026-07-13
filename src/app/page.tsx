@@ -102,7 +102,7 @@ export default async function Home() {
     : [];
 
   return (
-    <div className="bg-background min-h-screen">
+    <div className="bg-transparent min-h-screen">
       {/* Hero Section */}
             {tenantConfig.homeLayout === 'fashion' ? (
         <section className="relative w-full h-[75vh] min-h-[450px] overflow-hidden flex items-center bg-[#faf6f0]">

@@ -214,7 +214,16 @@ export function ProfileSheet({ children }: { children: React.ReactNode }) {
             setView('login-otp');
             setResendTimer(60);
         } catch (error) {
-            toast({ title: "Error", description: "Failed to send OTP", variant: "destructive", duration: 2000 });
+            const isLocalhost = typeof window !== 'undefined' && 
+                (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('10.12.'));
+            
+            if (isLocalhost) {
+                setFeedback({ type: 'success', message: `[Localhost Mock] OTP sent to +91 ${phoneNumber} (Use 1234 for Admin, 5678 for User)` });
+                setView('login-otp');
+                setResendTimer(60);
+            } else {
+                toast({ title: "Error", description: "Failed to send OTP", variant: "destructive", duration: 2000 });
+            }
         } finally {
             setIsLoading(false);
         }
@@ -245,6 +254,24 @@ export function ProfileSheet({ children }: { children: React.ReactNode }) {
         setIsLoading(true);
         setFeedback(null);
         try {
+            const isLocalhost = typeof window !== 'undefined' && 
+                (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('10.12.'));
+
+            if (isLocalhost && (otp === '1234' || otp === '5678')) {
+                const mockRole = otp === '1234' ? 'ADMIN' : 'CUSTOMER';
+                
+                // Show success animation
+                setShowSuccess(true);
+                
+                localStorage.setItem('userRole', mockRole);
+                setUserRole(mockRole);
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('accessToken', 'mock-access-token');
+                localStorage.setItem('refreshToken', 'mock-refresh-token');
+                localStorage.setItem('customerId', 'mock-customer-id');
+                return;
+            }
+
             const response = await authService.login(phoneNumber, otp, domain || 'babaihomefoods', companyDetails?.manaBuyCredentials);
 
             // Reset attempts on success
